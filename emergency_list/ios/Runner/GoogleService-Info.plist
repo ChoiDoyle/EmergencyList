@@ -29,6 +29,8 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:1020039023442:ios:6c5bac2f7ee4ff6cf5c88b</string>
+	<string>1:1020039023442:ios:fce1eb3bd16ab89cf5c88b</string>
+	<key>DATABASE_URL</key>
+	<string>https://emergencylist-6d645-default-rtdb.asia-southeast1.firebasedatabase.app</string>
 </dict>
 </plist>
