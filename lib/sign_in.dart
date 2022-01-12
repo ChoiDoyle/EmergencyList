@@ -70,9 +70,6 @@ class _SignInState extends State<SignIn> {
 
   //Login Page
   Column logInPage(BuildContext context) {
-    nameFinal = "";
-    phoneFinal = "";
-    birthFinal = null;
     return Column(
       children: <Widget>[
         Expanded(
@@ -105,35 +102,13 @@ class _SignInState extends State<SignIn> {
                           CustomUI().sizedBox(100),
                           //이름
                           CustomUI().titleForInput(context, '이름'),
-                          Container(
-                              padding: EdgeInsets.all(20.h),
-                              decoration: const BoxDecoration(
-                                  border: Border(
-                                      bottom: BorderSide(color: Colors.grey))),
-                              child: TextField(
-                                controller: nameInputController,
-                                decoration: InputDecoration(
-                                    hintText: '이름을 입력하세요',
-                                    hintStyle:
-                                        TextStyle(color: Colors.grey.shade300),
-                                    border: InputBorder.none),
-                              )),
+                          CustomUI().controllerForInput(
+                              nameInputController, '이름을 입력하세요'),
                           CustomUI().sizedBox(50),
                           //전화번호
                           CustomUI().titleForInput(context, '전화번호'),
-                          Container(
-                              padding: EdgeInsets.all(20.h),
-                              decoration: const BoxDecoration(
-                                  border: Border(
-                                      bottom: BorderSide(color: Colors.grey))),
-                              child: TextField(
-                                controller: phoneInputController,
-                                decoration: InputDecoration(
-                                    hintText: '전화번호를 입력하세요',
-                                    hintStyle:
-                                        TextStyle(color: Colors.grey.shade300),
-                                    border: InputBorder.none),
-                              )),
+                          CustomUI().controllerForInput(
+                              phoneInputController, '전화번호를 입력하세요'),
                           CustomUI().sizedBox(50),
                           //생년월일
                           CustomUI().titleForInput(context, '생년월일'),
@@ -201,13 +176,6 @@ class _SignInState extends State<SignIn> {
 
   //Sign Up Page
   Column signUpPage(BuildContext context) {
-    nameFinal = "";
-    phoneFinal = "";
-    emailFinal = "";
-    birthFinal = null;
-    bloodFinal = "";
-    phone1Final = "";
-    phone2Final = "";
     return Column(
       children: <Widget>[
         Expanded(
@@ -246,36 +214,12 @@ class _SignInState extends State<SignIn> {
                             CustomUI().sizedBox(100),
                             //이름
                             CustomUI().titleForInput(context, '이름'),
-                            Container(
-                                padding: EdgeInsets.all(20.h),
-                                decoration: const BoxDecoration(
-                                    border: Border(
-                                        bottom:
-                                            BorderSide(color: Colors.grey))),
-                                child: TextField(
-                                  controller: nameInputController,
-                                  decoration: InputDecoration(
-                                      hintText: '이름을 입력하세요',
-                                      hintStyle: TextStyle(
-                                          color: Colors.grey.shade300),
-                                      border: InputBorder.none),
-                                )),
+                            CustomUI().controllerForInput(
+                                nameInputController, '이름을 입력하세요'),
                             //전화번호
                             CustomUI().titleForInput(context, '전화번호'),
-                            Container(
-                                padding: EdgeInsets.all(20.h),
-                                decoration: const BoxDecoration(
-                                    border: Border(
-                                        bottom:
-                                            BorderSide(color: Colors.grey))),
-                                child: TextField(
-                                  controller: phoneInputController,
-                                  decoration: InputDecoration(
-                                      hintText: '전화번호를 입력하세요',
-                                      hintStyle: TextStyle(
-                                          color: Colors.grey.shade300),
-                                      border: InputBorder.none),
-                                )),
+                            CustomUI().controllerForInput(
+                                phoneInputController, '전화번호를 입력하세요'),
                             //생년월일
                             CustomUI().titleForInput(context, '생년월일'),
                             Container(
@@ -293,20 +237,8 @@ class _SignInState extends State<SignIn> {
                             ),
                             //이메일
                             CustomUI().titleForInput(context, '이메일'),
-                            Container(
-                                padding: EdgeInsets.all(20.h),
-                                decoration: const BoxDecoration(
-                                    border: Border(
-                                        bottom:
-                                            BorderSide(color: Colors.grey))),
-                                child: TextField(
-                                  controller: emailInputController,
-                                  decoration: InputDecoration(
-                                      hintText: '이메일을 입력하세요',
-                                      hintStyle: TextStyle(
-                                          color: Colors.grey.shade300),
-                                      border: InputBorder.none),
-                                )),
+                            CustomUI().controllerForInput(
+                                emailInputController, '이메일을 입력하세요'),
                             //혈액형
                             CustomUI().titleForInput(context, '혈액형'),
                             Container(
@@ -334,36 +266,12 @@ class _SignInState extends State<SignIn> {
                             CustomUI().sizedBox(100),
                             //제 1연락처
                             CustomUI().titleForInput(context, '제 1비상연락처'),
-                            Container(
-                                padding: EdgeInsets.all(20.h),
-                                decoration: const BoxDecoration(
-                                    border: Border(
-                                        bottom:
-                                            BorderSide(color: Colors.grey))),
-                                child: TextField(
-                                  controller: phone1InputController,
-                                  decoration: InputDecoration(
-                                      hintText: '제 1비상연락처를 입력하세요',
-                                      hintStyle: TextStyle(
-                                          color: Colors.grey.shade300),
-                                      border: InputBorder.none),
-                                )),
+                            CustomUI().controllerForInput(
+                                phone1InputController, '제 1비상연락처를 입력하세요'),
                             //제 2연락처
                             CustomUI().titleForInput(context, '제 2비상연락처'),
-                            Container(
-                                padding: EdgeInsets.all(20.h),
-                                decoration: const BoxDecoration(
-                                    border: Border(
-                                        bottom:
-                                            BorderSide(color: Colors.grey))),
-                                child: TextField(
-                                  controller: phone2InputController,
-                                  decoration: InputDecoration(
-                                      hintText: '제 2비상연락처를 입력하세요',
-                                      hintStyle: TextStyle(
-                                          color: Colors.grey.shade300),
-                                      border: InputBorder.none),
-                                )),
+                            CustomUI().controllerForInput(
+                                phone2InputController, '제 2비상연락처를 입력하세요'),
                             //회원가입 버튼
                             signUpBTN(context),
                           ],
@@ -386,7 +294,6 @@ class _SignInState extends State<SignIn> {
         emailFinal = emailInputController.text;
         phone1Final = phone1InputController.text;
         phone2Final = phone2InputController.text;
-        print(birthFinal.runtimeType);
         if (nameFinal == "" ||
             phoneFinal == "" ||
             emailFinal == "" ||

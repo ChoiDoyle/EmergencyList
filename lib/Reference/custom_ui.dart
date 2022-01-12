@@ -14,7 +14,6 @@ class CustomUI {
     );
   }
 
-  //데이터 연동이 안됨 (input controller에 넣은 값이 반영이 안됨)
   Container controllerForInput(TextEditingController controller, String hint) {
     return Container(
         padding: EdgeInsets.all(20.h),
