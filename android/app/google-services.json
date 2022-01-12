@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1020039023442",
+    "firebase_url": "https://emergencylist-6d645-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "emergencylist-6d645",
+    "storage_bucket": "emergencylist-6d645.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1020039023442:android:b2a5d26dd2e8c2c9f5c88b",
+        "android_client_info": {
+          "package_name": "com.example.emergency_list"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1020039023442-52mvr2idk4a7d8qc0200bledce63j9vn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAmn9x3JdyPwxGv7BL-CP72Drg_yVfDclg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1020039023442-52mvr2idk4a7d8qc0200bledce63j9vn.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1020039023442-tm52d07kdh11ffgjsur2ujrkud7gv8d2.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.emergencyList"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
