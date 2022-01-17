@@ -9,6 +9,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SignIn extends StatefulWidget {
   const SignIn({Key? key}) : super(key: key);
@@ -26,7 +27,8 @@ class _SignInState extends State<SignIn> {
   //Firebase Auth
   final AuthService _auth = AuthService();
   //Firebase Database
-  final database = FirebaseDatabase.instance.reference();
+  final rtdb = FirebaseDatabase.instance.reference();
+  final fsdb = FirebaseFirestore.instance;
 
   TextEditingController nameInputController = TextEditingController();
   TextEditingController phoneInputController = TextEditingController();
@@ -311,8 +313,9 @@ class _SignInState extends State<SignIn> {
             print(result);
             final customID =
                 '${phoneFinal}_${nameFinal}_${birthFinal.toString().split(' ')[0]}';
-            database
-                .child('Users/$customID')
+            fsdb
+                .collection('Users')
+                .doc(customID)
                 .set({
                   'email': emailFinal,
                   'bloodType': bloodFinal,
