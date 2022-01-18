@@ -4,10 +4,11 @@ import 'package:emergency_list/Reference/custom_func.dart';
 import 'package:emergency_list/Reference/custom_ui.dart';
 import 'package:emergency_list/home.dart';
 import 'package:emergency_list/Reference/util_picker.dart';
+import 'package:emergency_list/otp_auth_p.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -24,8 +25,6 @@ class _SignInState extends State<SignIn> {
     super.initState();
   }
 
-  //Firebase Auth
-  final AuthService _auth = AuthService();
   //Firebase Database
   final rtdb = FirebaseDatabase.instance.reference();
   final fsdb = FirebaseFirestore.instance;
@@ -143,25 +142,21 @@ class _SignInState extends State<SignIn> {
 
   ElevatedButton logInBTN(BuildContext context) {
     return ElevatedButton(
-      onPressed: () async {
+      onPressed: () {
         nameFinal = nameInputController.text;
         phoneFinal = phoneInputController.text;
         if (nameFinal == "" || phoneFinal == "" || birthFinal == null) {
           CustomUI().showToast('공란을 다 채워주세요!!');
         } else {
-          dynamic result = await _auth.signInAnon();
-          if (result == null) {
-            CustomUI().showToast('err: 로그인에 실패했습니다. 다시 시도해주세요');
-          } else {
-            //CustomUI().showToast('로그인 성공');
-            print(result);
-            final customID =
-                '${phoneFinal}_${nameFinal}_${birthFinal.toString().split(' ')[0]}';
-            //TODOS: customID를 가지는 데이터 있으면 로그인, 없으면 로그인 하지 않기
-            CustomFunc().storeString('customID', customID);
-            Navigator.of(context)
-                .push(MaterialPageRoute(builder: (context) => const Home()));
-          }
+          //CustomUI().showToast('로그인 성공');
+          final customID =
+              '${phoneFinal}_${nameFinal}_${birthFinal.toString().split(' ')[0]}';
+          //TODOS: customID를 가지는 데이터 있으면 로그인, 없으면 로그인 하지 않기
+          CustomFunc().storeString('customID', customID);
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => OTPAuth(
+                    phoneFinal: phoneFinal,
+                  )));
         }
       },
       child: const Text('로그인하기'),
@@ -305,31 +300,26 @@ class _SignInState extends State<SignIn> {
             phone2Final == "") {
           CustomUI().showToast('공란을 다 채워주세요!!');
         } else {
-          dynamic result = await _auth.signInAnon();
-          if (result == null) {
-            print('error signing in');
-          } else {
-            print('signed in');
-            print(result);
-            final customID =
-                '${phoneFinal}_${nameFinal}_${birthFinal.toString().split(' ')[0]}';
-            fsdb
-                .collection('Users')
-                .doc(customID)
-                .set({
-                  'email': emailFinal,
-                  'bloodType': bloodFinal,
-                  'emergencyContact1': phone1Final,
-                  'emergencyContact2': phone2Final
-                })
-                .then((_) => {
-                      print('uploaded'),
-                      CustomFunc().storeString('customID', customID),
-                      Navigator.of(context).push(
-                          MaterialPageRoute(builder: (context) => const Home()))
-                    })
-                .catchError((error) => {print('not uploaded'), print(error)});
-          }
+          final customID =
+              '${phoneFinal}_${nameFinal}_${birthFinal.toString().split(' ')[0]}';
+          fsdb
+              .collection('Users')
+              .doc(customID)
+              .set({
+                'email': emailFinal,
+                'bloodType': bloodFinal,
+                'emergencyContact1': phone1Final,
+                'emergencyContact2': phone2Final
+              })
+              .then((_) => {
+                    print('uploaded'),
+                    CustomFunc().storeString('customID', customID),
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => OTPAuth(
+                              phoneFinal: phoneFinal,
+                            )))
+                  })
+              .catchError((error) => {print('not uploaded'), print(error)});
         }
       },
       child: const Text('등록하기'),

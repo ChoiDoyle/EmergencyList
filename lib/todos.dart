@@ -5,3 +5,7 @@
 // TODOS: 로딩 dialog
 
 // TODOS: input controller form verification
+
+// TODOS: db 규칙 정하기 for security issues
+
+// TODOS: textinput 키보드 type 정하기 for numbers
