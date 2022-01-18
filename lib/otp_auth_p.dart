@@ -95,19 +95,19 @@ class _OTPAuthState extends State<OTPAuth> {
                             width: MediaQuery.of(context).size.width,
                             margin: EdgeInsets.only(left: 20.w),
                             padding: EdgeInsets.all(20.h),
-                            child: Text('로그인을 하려면 아래의 전화번호로 인증이 필요합니다.',
-                                textAlign: TextAlign.left,
+                            child: Text('로그인을 하려면 아래의 전화번호로\n인증이 필요합니다.',
+                                textAlign: TextAlign.center,
                                 style: TextStyle(
-                                    color: Colors.black, fontSize: 100.sp)),
+                                    color: Colors.black, fontSize: 50.sp)),
                           ),
                           Container(
                             width: MediaQuery.of(context).size.width,
                             margin: EdgeInsets.only(left: 20.w),
                             padding: EdgeInsets.all(20.h),
-                            child: Text('전화번호 : $phoneForOTP',
-                                textAlign: TextAlign.left,
+                            child: Text(customID.split('_')[0],
+                                textAlign: TextAlign.center,
                                 style: TextStyle(
-                                    color: Colors.black, fontSize: 50.sp)),
+                                    color: Colors.black, fontSize: 80.sp)),
                           ),
                           Visibility(
                               visible: otpCodeVisible,
@@ -119,7 +119,7 @@ class _OTPAuthState extends State<OTPAuth> {
                                 },
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
-                                    letterSpacing: 30, fontSize: 50.sp),
+                                    letterSpacing: 30, fontSize: 100.sp),
                                 maxLength: 6,
                                 controller: otpController,
                                 keyboardType: TextInputType.number,
@@ -143,6 +143,9 @@ class _OTPAuthState extends State<OTPAuth> {
                             visible: !otpCodeVisible,
                             child: ElevatedButton(
                               onPressed: () {
+                                setState(() {
+                                  otpCodeVisible = true;
+                                });
                                 verifyNumber();
                               },
                               child: Text('OTP 전송'),
@@ -172,9 +175,6 @@ class _OTPAuthState extends State<OTPAuth> {
         },
         codeSent: (String _verificationID, int? resendToken) {
           verificationIDReceived = _verificationID;
-          setState(() {
-            otpCodeVisible = true;
-          });
           print('code is sent');
         },
         codeAutoRetrievalTimeout: (String verificationID) {});
