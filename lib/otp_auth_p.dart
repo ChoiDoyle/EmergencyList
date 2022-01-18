@@ -1,21 +1,33 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:colorful_safe_area/colorful_safe_area.dart';
+import 'package:emergency_list/Reference/custom_func.dart';
 import 'package:emergency_list/Reference/custom_ui.dart';
 import 'package:emergency_list/home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class OTPAuth extends StatefulWidget {
-  String phoneFinal = '';
-  OTPAuth({Key? key, required this.phoneFinal}) : super(key: key);
+  List<String> credential;
+  OTPAuth({Key? key, required this.credential}) : super(key: key);
 
   @override
-  _OTPAuthState createState() => _OTPAuthState(phoneFinal);
+  _OTPAuthState createState() => _OTPAuthState(credential);
 }
 
+//For reference:-
+/*credential: 
+  ['signUp',
+  customID,
+  emailFinal,
+  bloodFinal,
+  phone1Final,
+  phone2Final]*/
+
 class _OTPAuthState extends State<OTPAuth> {
-  String phoneFinal = '';
-  _OTPAuthState(this.phoneFinal);
+  List<String> credential;
+  _OTPAuthState(this.credential);
 
   //Firebase Auth
   FirebaseAuth auth = FirebaseAuth.instance;
@@ -23,7 +35,18 @@ class _OTPAuthState extends State<OTPAuth> {
   bool otpCodeVisible = false;
   String phoneForOTP = '';
 
+  //Firestore
+  final fsdb = FirebaseFirestore.instance;
+
   TextEditingController otpController = TextEditingController();
+
+  String customID = '';
+
+  @override
+  void initState() {
+    super.initState();
+    customID = credential[1];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +60,7 @@ class _OTPAuthState extends State<OTPAuth> {
   }
 
   Column otpPage(BuildContext context) {
-    phoneForOTP = '+82' + phoneFinal.substring(1);
+    phoneForOTP = '+82' + customID.split('_')[0].substring(1);
     return Column(
       children: <Widget>[
         Expanded(
@@ -87,31 +110,44 @@ class _OTPAuthState extends State<OTPAuth> {
                                     color: Colors.black, fontSize: 50.sp)),
                           ),
                           Visibility(
+                              visible: otpCodeVisible,
+                              child: CupertinoTextField(
+                                onChanged: (value) {
+                                  if (value.length == 6) {
+                                    verifyOTP();
+                                  }
+                                },
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    letterSpacing: 30, fontSize: 50.sp),
+                                maxLength: 6,
+                                controller: otpController,
+                                keyboardType: TextInputType.number,
+                              )),
+                          Visibility(
                             visible: otpCodeVisible,
-                            child: Container(
-                                padding: EdgeInsets.all(20.h),
-                                decoration: const BoxDecoration(
-                                    border: Border(
-                                        bottom:
-                                            BorderSide(color: Colors.grey))),
-                                child: TextField(
-                                  controller: otpController,
-                                  decoration: InputDecoration(
-                                      hintText: 'otp 입력',
-                                      hintStyle: TextStyle(
-                                          color: Colors.grey.shade300),
-                                      border: InputBorder.none),
-                                )),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text("OTP를 받지 못하였나요?"),
+                                CupertinoButton(
+                                    child: Text("다시 전송"),
+                                    onPressed: () {
+                                      verifyNumber();
+                                      CustomUI().showToast('다시 전송하였습니다.');
+                                    })
+                              ],
+                            ),
                           ),
-                          ElevatedButton(
+                          Visibility(
+                            visible: !otpCodeVisible,
+                            child: ElevatedButton(
                               onPressed: () {
-                                if (otpCodeVisible) {
-                                  verifyOTP();
-                                } else {
-                                  verifyNumber();
-                                }
+                                verifyNumber();
                               },
-                              child: Text(otpCodeVisible ? '로그인' : 'otp전송')),
+                              child: Text('OTP 전송'),
+                            ),
+                          )
                         ],
                       ),
                     ),
@@ -126,11 +162,10 @@ class _OTPAuthState extends State<OTPAuth> {
   verifyNumber() {
     auth.verifyPhoneNumber(
         phoneNumber: phoneForOTP,
-        verificationCompleted: (PhoneAuthCredential credential) {
-          print('1: logged in');
-          /*await auth.signInWithCredential(credential).then((value) {
-            print('You are logged in successfully');
-          });*/
+        verificationCompleted: (PhoneAuthCredential credential) async {
+          await auth.signInWithCredential(credential).then((value) {
+            print('1: logged in');
+          });
         },
         verificationFailed: (FirebaseAuthException exception) {
           print('login failed : ${exception.message}');
@@ -148,10 +183,46 @@ class _OTPAuthState extends State<OTPAuth> {
   verifyOTP() async {
     PhoneAuthCredential _credential = PhoneAuthProvider.credential(
         verificationId: verificationIDReceived, smsCode: otpController.text);
-    await auth.signInWithCredential(_credential).then((value) {
+    try {
+      UserCredential _result = await auth.signInWithCredential(_credential);
       print('successful login');
+      if (credential[0] == 'logIn') {
+        _logIn(customID);
+      } else {
+        _signUp(customID, credential[2], credential[3], credential[4],
+            credential[5]);
+      }
+    } catch (e) {
+      CustomUI().showToast('인증번호가 불일치합니다. 다시 시도해주세요!!');
+      otpController.clear();
+    }
+  }
+
+  _logIn(String _customID) {
+    CustomFunc().storeString('customID', _customID).then((value) {
       Navigator.of(context)
           .push(MaterialPageRoute(builder: (context) => const Home()));
     });
+  }
+
+  _signUp(String _customID, String _emailFinal, String _bloodFinal,
+      String _phone1Final, String _phone2Final) {
+    fsdb
+        .collection('Users')
+        .doc(customID)
+        .set({
+          'email': _emailFinal,
+          'bloodType': _bloodFinal,
+          'emergencyContact1': _phone1Final,
+          'emergencyContact2': _phone2Final
+        })
+        .then((_) => {
+              print('uploaded'),
+              CustomFunc().storeString('customID', _customID).then((value) {
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => const Home()));
+              })
+            })
+        .catchError((error) => {print('not uploaded'), print(error)});
   }
 }

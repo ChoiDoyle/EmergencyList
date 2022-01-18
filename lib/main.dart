@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:colorful_safe_area/colorful_safe_area.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

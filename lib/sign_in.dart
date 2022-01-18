@@ -38,10 +38,11 @@ class _SignInState extends State<SignIn> {
   String nameFinal = "";
   String phoneFinal = "";
   String emailFinal = "";
-  DateTime? birthFinal;
+  DateTime? birthDate;
   String bloodFinal = "";
   String phone1Final = "";
   String phone2Final = "";
+  String birthFinal = "";
 
   //Bottom Navigation Bar
   int navigationIndex = 0;
@@ -123,7 +124,7 @@ class _SignInState extends State<SignIn> {
                               initialDateTime: dateTime,
                               mode: CupertinoDatePickerMode.date,
                               onDateTimeChanged: (dateTime) =>
-                                  setState(() => birthFinal = dateTime),
+                                  setState(() => birthDate = dateTime),
                             )),
                           ),
                           CustomUI().sizedBox(350),
@@ -145,18 +146,16 @@ class _SignInState extends State<SignIn> {
       onPressed: () {
         nameFinal = nameInputController.text;
         phoneFinal = phoneInputController.text;
-        if (nameFinal == "" || phoneFinal == "" || birthFinal == null) {
+        if (nameFinal == "" || phoneFinal == "" || birthDate == null) {
           CustomUI().showToast('공란을 다 채워주세요!!');
         } else {
           //CustomUI().showToast('로그인 성공');
-          final customID =
-              '${phoneFinal}_${nameFinal}_${birthFinal.toString().split(' ')[0]}';
+          birthFinal = birthDate.toString().split(' ')[0];
+          final customID = '${phoneFinal}_${nameFinal}_$birthFinal';
           //TODOS: customID를 가지는 데이터 있으면 로그인, 없으면 로그인 하지 않기
-          CustomFunc().storeString('customID', customID);
           Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => OTPAuth(
-                    phoneFinal: phoneFinal,
-                  )));
+                  credential: ['logIn', customID, '0', '0', '0', '0'])));
         }
       },
       child: const Text('로그인하기'),
@@ -229,7 +228,7 @@ class _SignInState extends State<SignIn> {
                                 initialDateTime: dateTime,
                                 mode: CupertinoDatePickerMode.date,
                                 onDateTimeChanged: (dateTime) =>
-                                    setState(() => birthFinal = dateTime),
+                                    setState(() => birthDate = dateTime),
                               )),
                             ),
                             //이메일
@@ -294,32 +293,26 @@ class _SignInState extends State<SignIn> {
         if (nameFinal == "" ||
             phoneFinal == "" ||
             emailFinal == "" ||
-            birthFinal == null ||
+            birthDate == null ||
             bloodFinal == "" ||
             phone1Final == "" ||
             phone2Final == "") {
           CustomUI().showToast('공란을 다 채워주세요!!');
         } else {
-          final customID =
-              '${phoneFinal}_${nameFinal}_${birthFinal.toString().split(' ')[0]}';
-          fsdb
-              .collection('Users')
-              .doc(customID)
-              .set({
-                'email': emailFinal,
-                'bloodType': bloodFinal,
-                'emergencyContact1': phone1Final,
-                'emergencyContact2': phone2Final
-              })
-              .then((_) => {
-                    print('uploaded'),
-                    CustomFunc().storeString('customID', customID),
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => OTPAuth(
-                              phoneFinal: phoneFinal,
-                            )))
-                  })
-              .catchError((error) => {print('not uploaded'), print(error)});
+          birthFinal = birthDate.toString().split(' ')[0];
+          final customID = '${phoneFinal}_${nameFinal}_${birthFinal}';
+          //TODOS: customID를 가지는 데이터 없으면 회원가입, 없으면 회원가입 하지 않기
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => OTPAuth(
+                    credential: [
+                      'signUp',
+                      customID,
+                      emailFinal,
+                      bloodFinal,
+                      phone1Final,
+                      phone2Final
+                    ],
+                  )));
         }
       },
       child: const Text('등록하기'),
