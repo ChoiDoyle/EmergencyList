@@ -12,6 +12,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+enum LoadingState { init, loading, done }
+
 class SignIn extends StatefulWidget {
   const SignIn({Key? key}) : super(key: key);
 
@@ -28,6 +30,9 @@ class _SignInState extends State<SignIn> {
   //Firebase Database
   final rtdb = FirebaseDatabase.instance.reference();
   final fsdb = FirebaseFirestore.instance;
+
+  //Loading Spinner
+  LoadingState state = LoadingState.init;
 
   TextEditingController nameInputController = TextEditingController();
   TextEditingController phoneInputController = TextEditingController();
@@ -104,13 +109,13 @@ class _SignInState extends State<SignIn> {
                           CustomUI().sizedBox(100),
                           //이름
                           CustomUI().titleForInput(context, '이름'),
-                          CustomUI().controllerForInput(
-                              nameInputController, '이름을 입력하세요'),
+                          CustomUI().controllerForInput(nameInputController,
+                              '이름을 입력하세요', TextInputType.name),
                           CustomUI().sizedBox(50),
                           //전화번호
                           CustomUI().titleForInput(context, '전화번호'),
-                          CustomUI().controllerForInput(
-                              phoneInputController, '전화번호를 입력하세요'),
+                          CustomUI().controllerForInput(phoneInputController,
+                              '전화번호를 입력하세요', TextInputType.phone),
                           CustomUI().sizedBox(50),
                           //생년월일
                           CustomUI().titleForInput(context, '생년월일'),
@@ -142,31 +147,49 @@ class _SignInState extends State<SignIn> {
   }
 
   ElevatedButton logInBTN(BuildContext context) {
+    final _isStretched = state == LoadingState.init;
+    final _isDone = state == LoadingState.done;
     return ElevatedButton(
-      onPressed: () {
+      onPressed: () async {
+        setState(() {
+          state = LoadingState.loading;
+        });
         nameFinal = nameInputController.text;
         phoneFinal = phoneInputController.text;
         if (nameFinal == "" || phoneFinal == "" || birthDate == null) {
           CustomUI().showToast('공란을 다 채워주세요!!');
         } else {
-          //CustomUI().showToast('로그인 성공');
           birthFinal = birthDate.toString().split(' ')[0];
           final customID = '${phoneFinal}_${nameFinal}_$birthFinal';
-          //TODOS: customID를 가지는 데이터 있으면 로그인, 없으면 로그인 하지 않기
-          Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => OTPAuth(
-                  credential: ['logIn', customID, '0', '0', '0', '0'])));
+          if (await checkIfDocExists(customID)) {
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => OTPAuth(
+                    credential: ['logIn', customID, '0', '0', '0', '0'])));
+          } else {
+            await Future.delayed(Duration(seconds: 2));
+            CustomUI().showToast('일치하는 유저가 없습니다.');
+            setState(() {
+              state = LoadingState.done;
+            });
+            await Future.delayed(Duration(seconds: 2));
+          }
         }
+        setState(() {
+          state = LoadingState.init;
+        });
       },
-      child: const Text('로그인하기'),
-      style: ElevatedButton.styleFrom(
-          primary: Colors.black,
+      child: _isStretched
+          ? CustomUI().buildButton()
+          : CustomUI().buildLoading(_isDone),
+      /*style: ElevatedButton.styleFrom(
+          primary: Colors.cyan,
+          shape: StadiumBorder(),
           padding: const EdgeInsets.symmetric(horizontal: 100, vertical: 10),
           textStyle: const TextStyle(
             color: Colors.white,
             fontSize: 15,
             fontWeight: FontWeight.bold,
-          )),
+          )),*/
     );
   }
 
@@ -210,12 +233,12 @@ class _SignInState extends State<SignIn> {
                             CustomUI().sizedBox(100),
                             //이름
                             CustomUI().titleForInput(context, '이름'),
-                            CustomUI().controllerForInput(
-                                nameInputController, '이름을 입력하세요'),
+                            CustomUI().controllerForInput(nameInputController,
+                                '이름을 입력하세요', TextInputType.name),
                             //전화번호
                             CustomUI().titleForInput(context, '전화번호'),
-                            CustomUI().controllerForInput(
-                                phoneInputController, '전화번호를 입력하세요'),
+                            CustomUI().controllerForInput(phoneInputController,
+                                '전화번호를 입력하세요', TextInputType.phone),
                             //생년월일
                             CustomUI().titleForInput(context, '생년월일'),
                             Container(
@@ -233,8 +256,8 @@ class _SignInState extends State<SignIn> {
                             ),
                             //이메일
                             CustomUI().titleForInput(context, '이메일'),
-                            CustomUI().controllerForInput(
-                                emailInputController, '이메일을 입력하세요'),
+                            CustomUI().controllerForInput(emailInputController,
+                                '이메일을 입력하세요', TextInputType.emailAddress),
                             //혈액형
                             CustomUI().titleForInput(context, '혈액형'),
                             Container(
@@ -262,12 +285,12 @@ class _SignInState extends State<SignIn> {
                             CustomUI().sizedBox(100),
                             //제 1연락처
                             CustomUI().titleForInput(context, '제 1비상연락처'),
-                            CustomUI().controllerForInput(
-                                phone1InputController, '제 1비상연락처를 입력하세요'),
+                            CustomUI().controllerForInput(phone1InputController,
+                                '제 1비상연락처를 입력하세요', TextInputType.phone),
                             //제 2연락처
                             CustomUI().titleForInput(context, '제 2비상연락처'),
-                            CustomUI().controllerForInput(
-                                phone2InputController, '제 2비상연락처를 입력하세요'),
+                            CustomUI().controllerForInput(phone2InputController,
+                                '제 2비상연락처를 입력하세요', TextInputType.phone),
                             //회원가입 버튼
                             signUpBTN(context),
                           ],
@@ -301,23 +324,27 @@ class _SignInState extends State<SignIn> {
         } else {
           birthFinal = birthDate.toString().split(' ')[0];
           final customID = '${phoneFinal}_${nameFinal}_${birthFinal}';
-          //TODOS: customID를 가지는 데이터 없으면 회원가입, 없으면 회원가입 하지 않기
-          Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => OTPAuth(
-                    credential: [
-                      'signUp',
-                      customID,
-                      emailFinal,
-                      bloodFinal,
-                      phone1Final,
-                      phone2Final
-                    ],
-                  )));
+          if (await checkIfDocExists(customID)) {
+            CustomUI().showToast('유저가 이미 존재합니다. 로그인 해주세요!');
+          } else {
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => OTPAuth(
+                      credential: [
+                        'signUp',
+                        customID,
+                        emailFinal,
+                        bloodFinal,
+                        phone1Final,
+                        phone2Final
+                      ],
+                    )));
+          }
         }
       },
       child: const Text('등록하기'),
       style: ElevatedButton.styleFrom(
           primary: Colors.cyan.shade500,
+          shape: StadiumBorder(),
           padding: const EdgeInsets.symmetric(horizontal: 100, vertical: 10),
           textStyle: const TextStyle(
             color: Colors.white,
@@ -325,6 +352,15 @@ class _SignInState extends State<SignIn> {
             fontWeight: FontWeight.bold,
           )),
     );
+  }
+
+  Future<bool> checkIfDocExists(String docID) async {
+    try {
+      final doc = await fsdb.collection('Users').doc(docID).get();
+      return doc.exists;
+    } catch (e) {
+      throw e;
+    }
   }
 
   //Bottom Navigation Bar

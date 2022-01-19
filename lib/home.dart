@@ -19,21 +19,55 @@ class _HomeState extends State<Home> {
 
   int navigationIndex = 0;
 
+  final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     final double height = MediaQuery.of(context).size.height;
     final double width = MediaQuery.of(context).size.width;
     return ColorfulSafeArea(
-      color: Colors.cyan,
+      color: Colors.white,
       child: Scaffold(
         backgroundColor: Colors.white,
+        key: _key,
+        drawer: Drawer(),
+        appBar: AppBar(
+          title: const Text(
+            'HomePage',
+            style: TextStyle(color: Colors.black),
+          ),
+          centerTitle: true,
+          elevation: 0.0,
+          backgroundColor: Colors.grey[100],
+          leading: IconButton(
+            icon: Icon(Icons.menu, color: Colors.black),
+            onPressed: () {
+              _key.currentState?.openDrawer();
+            },
+          ),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(
+                Icons.notifications,
+                color: Colors.black,
+              ),
+              onPressed: () {},
+            ),
+            IconButton(
+              icon: Icon(
+                Icons.send,
+                color: Colors.black,
+              ),
+              onPressed: () {},
+            ),
+          ],
+        ),
         body: Column(
           children: [
-            buildTopLabel(height, width),
+            //buildTopLabel(height, width),
             SizedBox(
               height: width * 0.01,
             ),
-            // TODO : signOutBTN 위치 바꾸고, 리스트뷰 넣기
             signOutBTN(),
           ],
         ),
@@ -63,7 +97,7 @@ class _HomeState extends State<Home> {
     );
   }
 
-  Container buildTopLabel(double height, double width) {
+  /*Container buildTopLabel(double height, double width) {
     return Container(
       height: 300.h,
       decoration: BoxDecoration(
@@ -97,7 +131,7 @@ class _HomeState extends State<Home> {
         ],
       ),
     );
-  }
+  }*/
 
   /*StreamBuilder<Event> buildListView() {
     return navigationIndex == 0 ? friendStream() : myStream();
