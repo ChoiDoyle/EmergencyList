@@ -5,6 +5,7 @@ import 'package:emergency_list/Authentication/wrapper.dart';
 import 'package:emergency_list/Reference/custom_func.dart';
 import 'package:emergency_list/Reference/custom_ui.dart';
 import 'package:emergency_list/data.dart';
+import 'package:emergency_list/myInfo.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -66,7 +67,7 @@ class _HomeState extends State<Home> {
           ),
           centerTitle: true,
           elevation: 0.0,
-          backgroundColor: Colors.grey[100],
+          backgroundColor: Colors.grey[200],
           leading: IconButton(
             icon: Icon(Icons.menu, color: Colors.black),
             onPressed: () {
@@ -76,10 +77,20 @@ class _HomeState extends State<Home> {
           actions: <Widget>[
             IconButton(
               icon: Icon(
-                Icons.notifications,
+                Icons.add,
                 color: Colors.black,
               ),
               onPressed: () {},
+            ),
+            IconButton(
+              icon: Icon(
+                Icons.person_pin_circle_outlined,
+                color: Colors.black,
+              ),
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => MyInfo(customID: customID)));
+              },
             ),
             IconButton(
               icon: Icon(
@@ -96,7 +107,11 @@ class _HomeState extends State<Home> {
             ),
           ],
         ),
-        body: navigationIndex == 0 ? familyInfoBuilder() : familyInfoBuilder(),
+        body: navigationIndex == 0
+            ? familyInfoBuilder()
+            : navigationIndex == 1
+                ? familyInfoBuilder()
+                : Container(),
         bottomNavigationBar: buildNavigationBar(),
       ),
     );
@@ -200,23 +215,23 @@ class _HomeState extends State<Home> {
       padding: const EdgeInsets.only(left: 20, right: 20, bottom: 10),
       child: Container(
           decoration: BoxDecoration(
-              color: Colors.cyan,
+              color: Colors.grey[300],
               borderRadius: BorderRadius.only(
                 bottomLeft:
                     Radius.circular(MediaQuery.of(context).size.height * 0.05),
               ),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.cyan.withOpacity(0.15),
+                  color: Colors.black.withOpacity(0.3),
                   offset: const Offset(-10.0, 0.0),
-                  blurRadius: 20.0,
-                  spreadRadius: 4.0,
+                  blurRadius: 20.0.r,
+                  spreadRadius: 4.0.r,
                 )
               ]),
-          padding: const EdgeInsets.only(
-            left: 30,
-            top: 10,
-            bottom: 10,
+          padding: EdgeInsets.only(
+            left: 40.h,
+            top: 20.h,
+            bottom: 20.h,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -228,7 +243,7 @@ class _HomeState extends State<Home> {
                   _name,
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                      color: Colors.white,
+                      color: Colors.black,
                       fontSize: 80.sp,
                       fontWeight: FontWeight.bold),
                 ),
@@ -243,7 +258,7 @@ class _HomeState extends State<Home> {
                   _relation,
                   textAlign: TextAlign.end,
                   style: TextStyle(
-                      color: Colors.white,
+                      color: Colors.black,
                       fontSize: 50.sp,
                       fontWeight: FontWeight.bold),
                 ),
@@ -255,7 +270,7 @@ class _HomeState extends State<Home> {
                   '전화번호 : $_phone',
                   textAlign: TextAlign.end,
                   style: TextStyle(
-                      color: Colors.white,
+                      color: Colors.black,
                       fontSize: 50.sp,
                       fontWeight: FontWeight.bold),
                 ),
@@ -267,7 +282,7 @@ class _HomeState extends State<Home> {
                   '생일 : $_birth',
                   textAlign: TextAlign.end,
                   style: TextStyle(
-                      color: Colors.white,
+                      color: Colors.black,
                       fontSize: 50.sp,
                       fontWeight: FontWeight.bold),
                 ),
@@ -328,13 +343,26 @@ class _HomeState extends State<Home> {
       type: BottomNavigationBarType.shifting,
       currentIndex: navigationIndex,
       onTap: (index) => setState(() => navigationIndex = index),
-      items: const [
+      fixedColor: Colors.black,
+      items: [
         BottomNavigationBarItem(
-            icon: Icon(Icons.home), label: '가족', backgroundColor: Colors.cyan),
+            icon: Icon(Icons.family_restroom, color: Colors.black),
+            label: '가족',
+            backgroundColor: Colors.grey[200]),
         BottomNavigationBarItem(
-            icon: Icon(Icons.favorite),
+            icon: Icon(
+              Icons.favorite,
+              color: Colors.black,
+            ),
             label: '지인',
-            backgroundColor: Colors.cyan),
+            backgroundColor: Colors.grey[200]),
+        BottomNavigationBarItem(
+            icon: Icon(
+              Icons.person,
+              color: Colors.black,
+            ),
+            label: '내 정보',
+            backgroundColor: Colors.grey[200]),
       ],
     );
   }

@@ -10,3 +10,10 @@ class FriendData {
 
   FriendData(this.menu, this.phone, this.table, this.timestamp, this.dbKey);
 }
+
+class MyData {
+  String phone, table, timestamp, dbKey;
+  Map menu;
+
+  MyData(this.menu, this.phone, this.table, this.timestamp, this.dbKey);
+}
