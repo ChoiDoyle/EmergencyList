@@ -4,6 +4,7 @@ import 'package:emergency_list/Reference/custom_func.dart';
 import 'package:emergency_list/Reference/custom_ui.dart';
 import 'package:emergency_list/home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -35,8 +36,9 @@ class _OTPAuthState extends State<OTPAuth> {
   bool otpCodeVisible = false;
   String phoneForOTP = '';
 
-  //Firestore
+  //Firebase & Firestore
   final fsdb = FirebaseFirestore.instance;
+  final rtdb = FirebaseDatabase.instance.reference();
 
   TextEditingController otpController = TextEditingController();
 
@@ -200,8 +202,8 @@ class _OTPAuthState extends State<OTPAuth> {
 
   _logIn(String _customID) {
     CustomFunc().storeString('customID', _customID).then((value) {
-      Navigator.of(context)
-          .push(MaterialPageRoute(builder: (context) => const Home()));
+      Navigator.of(context).push(
+          MaterialPageRoute(builder: (context) => Home(customID: customID)));
     });
   }
 
@@ -217,12 +219,21 @@ class _OTPAuthState extends State<OTPAuth> {
           'emergencyContact2': _phone2Final
         })
         .then((_) => {
-              print('uploaded'),
-              CustomFunc().storeString('customID', _customID).then((value) {
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => const Home()));
-              })
+              rtdb.child('Users/$customID').set({
+                'family': {'empty': 1},
+                'friend': {'empty': 1}
+              }).then((_) => {
+                    print('uploaded'),
+                    CustomFunc()
+                        .storeString('customID', _customID)
+                        .then((value) {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => Home(customID: customID)));
+                    }).catchError((error) =>
+                            {print('at OTP_rtdb : not uploaded'), print(error)})
+                  })
             })
-        .catchError((error) => {print('not uploaded'), print(error)});
+        .catchError(
+            (error) => {print('at OTP_fsdb : not uploaded'), print(error)});
   }
 }

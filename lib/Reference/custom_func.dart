@@ -1,6 +1,13 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
+//2초 딜레이 주고 싶을 때
+//await Future.delayed(Duration(seconds: 2));
+
 class CustomFunc {
+  Future giveDelay(int _duration) async {
+    await Future.delayed(Duration(milliseconds: _duration));
+  }
+
   Future storeString(String id, String content) async {
     final SharedPreferences sharedPreferences =
         await SharedPreferences.getInstance();
@@ -11,8 +18,7 @@ class CustomFunc {
   Future streamString(String id) async {
     final SharedPreferences sharedPreferences =
         await SharedPreferences.getInstance();
-    String? a = sharedPreferences.getString(id);
-    print('2');
+    String a = sharedPreferences.getString(id).toString();
     print(a);
     return a;
   }

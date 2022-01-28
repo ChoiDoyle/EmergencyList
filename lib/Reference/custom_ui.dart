@@ -31,27 +31,11 @@ class CustomUI {
         ));
   }
 
-  SizedBox sizedBox(int height) {
+  SizedBox sizedBox(double height) {
     return SizedBox(
       height: height.h,
     );
   }
-
-  Widget buildButton() => OutlinedButton(
-        style: OutlinedButton.styleFrom(
-          shape: StadiumBorder(),
-          side: BorderSide(width: 6.h, color: Colors.cyan),
-        ),
-        child: Text(
-          '로그인하기',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 60.sp,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        onPressed: () {},
-      );
 
   Widget buildLoading(bool _isDone) {
     final _color = _isDone ? Colors.green : Colors.cyan;

@@ -1,11 +1,8 @@
 import 'package:colorful_safe_area/colorful_safe_area.dart';
-import 'package:emergency_list/Authentication/auth.dart';
 import 'package:emergency_list/Reference/custom_func.dart';
 import 'package:emergency_list/Reference/custom_ui.dart';
-import 'package:emergency_list/home.dart';
 import 'package:emergency_list/Reference/util_picker.dart';
 import 'package:emergency_list/otp_auth_p.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -32,6 +29,7 @@ class _SignInState extends State<SignIn> {
   final fsdb = FirebaseFirestore.instance;
 
   //Loading Spinner
+  bool _isAnimating = true;
   LoadingState state = LoadingState.init;
 
   TextEditingController nameInputController = TextEditingController();
@@ -80,117 +78,133 @@ class _SignInState extends State<SignIn> {
     return Column(
       children: <Widget>[
         Expanded(
-          child: Container(
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: Colors.cyan,
-              ),
-              child: Column(
-                children: <Widget>[
-                  CustomUI().sizedBox(40),
-                  Text(
-                    '로그인하기',
-                    style: TextStyle(color: Colors.white, fontSize: 100.sp),
-                  ),
-                  CustomUI().sizedBox(10),
-                  Text(
-                    '재난명부 Ver1.0',
-                    style: TextStyle(color: Colors.white, fontSize: 70.sp),
-                  ),
-                  CustomUI().sizedBox(20),
-                  Container(
-                    decoration: const BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.all(Radius.circular(60))),
-                    child: Padding(
-                      padding: EdgeInsets.all(30.h),
-                      child: Column(
-                        children: [
-                          CustomUI().sizedBox(100),
-                          //이름
-                          CustomUI().titleForInput(context, '이름'),
-                          CustomUI().controllerForInput(nameInputController,
-                              '이름을 입력하세요', TextInputType.name),
-                          CustomUI().sizedBox(50),
-                          //전화번호
-                          CustomUI().titleForInput(context, '전화번호'),
-                          CustomUI().controllerForInput(phoneInputController,
-                              '전화번호를 입력하세요', TextInputType.phone),
-                          CustomUI().sizedBox(50),
-                          //생년월일
-                          CustomUI().titleForInput(context, '생년월일'),
-                          Container(
-                            height: 400.h,
-                            padding: EdgeInsets.all(5.h),
-                            child: SizedBox(
-                                child: CupertinoDatePicker(
-                              minimumYear: 1900,
-                              maximumYear: DateTime.now().year,
-                              initialDateTime: dateTime,
-                              mode: CupertinoDatePickerMode.date,
-                              onDateTimeChanged: (dateTime) =>
-                                  setState(() => birthDate = dateTime),
-                            )),
-                          ),
-                          CustomUI().sizedBox(350),
-                          //로그인 버튼
-                          logInBTN(context),
-                        ],
+          child: SingleChildScrollView(
+            child: Container(
+                height: MediaQuery.of(context).size.height - 400.h,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: Colors.cyan,
+                ),
+                child: Column(
+                  children: <Widget>[
+                    CustomUI().sizedBox(40),
+                    Text(
+                      '로그인하기',
+                      style: TextStyle(color: Colors.white, fontSize: 100.sp),
+                    ),
+                    CustomUI().sizedBox(10),
+                    Text(
+                      '재난명부 Ver1.0',
+                      style: TextStyle(color: Colors.white, fontSize: 70.sp),
+                    ),
+                    CustomUI().sizedBox(20),
+                    Container(
+                      decoration: const BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.all(Radius.circular(40))),
+                      child: Padding(
+                        padding: EdgeInsets.all(30.h),
+                        child: Column(
+                          children: [
+                            CustomUI().sizedBox(100),
+                            //이름
+                            CustomUI().titleForInput(context, '이름'),
+                            CustomUI().controllerForInput(nameInputController,
+                                '이름을 입력하세요', TextInputType.name),
+                            CustomUI().sizedBox(50),
+                            //전화번호
+                            CustomUI().titleForInput(context, '전화번호'),
+                            CustomUI().controllerForInput(phoneInputController,
+                                '전화번호를 입력하세요', TextInputType.phone),
+                            CustomUI().sizedBox(50),
+                            //생년월일
+                            CustomUI().titleForInput(context, '생년월일'),
+                            Container(
+                              height: 400.h,
+                              padding: EdgeInsets.all(5.h),
+                              child: SizedBox(
+                                  child: CupertinoDatePicker(
+                                minimumYear: 1900,
+                                maximumYear: DateTime.now().year,
+                                initialDateTime: dateTime,
+                                mode: CupertinoDatePickerMode.date,
+                                onDateTimeChanged: (dateTime) =>
+                                    setState(() => birthDate = dateTime),
+                              )),
+                            ),
+                            CustomUI().sizedBox(900.h),
+                            //로그인 버튼
+                            logInBTNBuilder(),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              )),
+                  ],
+                )),
+          ),
         ),
       ],
     );
   }
 
-  ElevatedButton logInBTN(BuildContext context) {
-    final _isStretched = state == LoadingState.init;
+  Widget logInBTNBuilder() {
+    final _isStretched = _isAnimating || state == LoadingState.init;
     final _isDone = state == LoadingState.done;
+    return AnimatedContainer(
+      duration: Duration(milliseconds: 300),
+      curve: Curves.easeIn,
+      width: state == LoadingState.init ? 1000.h : 150.h,
+      onEnd: () => setState(() => _isAnimating = !_isAnimating),
+      height: 150.h,
+      child: _isStretched ? logInBTN() : CustomUI().buildLoading(_isDone),
+    );
+  }
+
+  ElevatedButton logInBTN() {
     return ElevatedButton(
-      onPressed: () async {
-        setState(() {
-          state = LoadingState.loading;
-        });
-        nameFinal = nameInputController.text;
-        phoneFinal = phoneInputController.text;
-        if (nameFinal == "" || phoneFinal == "" || birthDate == null) {
-          CustomUI().showToast('공란을 다 채워주세요!!');
-        } else {
-          birthFinal = birthDate.toString().split(' ')[0];
-          final customID = '${phoneFinal}_${nameFinal}_$birthFinal';
-          if (await checkIfDocExists(customID)) {
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => OTPAuth(
-                    credential: ['logIn', customID, '0', '0', '0', '0'])));
+        onPressed: () async {
+          setState(() {
+            state = LoadingState.loading;
+          });
+          await CustomFunc().giveDelay(500);
+          nameFinal = nameInputController.text;
+          phoneFinal = phoneInputController.text;
+          if (nameFinal == "" || phoneFinal == "" || birthDate == null) {
+            CustomUI().showToast('공란을 다 채워주세요!!');
           } else {
-            await Future.delayed(Duration(seconds: 2));
-            CustomUI().showToast('일치하는 유저가 없습니다.');
-            setState(() {
-              state = LoadingState.done;
-            });
-            await Future.delayed(Duration(seconds: 2));
+            birthFinal = birthDate.toString().split(' ')[0];
+            final customID = '${phoneFinal}_${nameFinal}_$birthFinal';
+            if (await checkIfDocExists(customID)) {
+              setState(() {
+                state = LoadingState.done;
+              });
+              await CustomFunc().giveDelay(500);
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => OTPAuth(
+                      credential: ['logIn', customID, '0', '0', '0', '0'])));
+            } else {
+              CustomUI().showToast('일치하는 유저가 없습니다.');
+            }
           }
-        }
-        setState(() {
-          state = LoadingState.init;
-        });
-      },
-      child: _isStretched
-          ? CustomUI().buildButton()
-          : CustomUI().buildLoading(_isDone),
-      /*style: ElevatedButton.styleFrom(
+          setState(() {
+            state = LoadingState.init;
+          });
+        },
+        child: FittedBox(
+          child: Text(
+            '로그인하기',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 60.sp,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        style: ElevatedButton.styleFrom(
           primary: Colors.cyan,
           shape: StadiumBorder(),
-          padding: const EdgeInsets.symmetric(horizontal: 100, vertical: 10),
-          textStyle: const TextStyle(
-            color: Colors.white,
-            fontSize: 15,
-            fontWeight: FontWeight.bold,
-          )),*/
-    );
+          padding: EdgeInsets.symmetric(vertical: 10.h),
+        ));
   }
 
   //Sign Up Page
@@ -225,7 +239,7 @@ class _SignInState extends State<SignIn> {
                     Container(
                       decoration: const BoxDecoration(
                           color: Colors.white,
-                          borderRadius: BorderRadius.all(Radius.circular(60))),
+                          borderRadius: BorderRadius.all(Radius.circular(40))),
                       child: Padding(
                         padding: EdgeInsets.all(30.h),
                         child: Column(
@@ -291,8 +305,9 @@ class _SignInState extends State<SignIn> {
                             CustomUI().titleForInput(context, '제 2비상연락처'),
                             CustomUI().controllerForInput(phone2InputController,
                                 '제 2비상연락처를 입력하세요', TextInputType.phone),
+                            CustomUI().sizedBox(100.h),
                             //회원가입 버튼
-                            signUpBTN(context),
+                            signUpBTNBuilder(),
                           ],
                         ),
                       ),
@@ -305,53 +320,81 @@ class _SignInState extends State<SignIn> {
     );
   }
 
-  ElevatedButton signUpBTN(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () async {
-        nameFinal = nameInputController.text;
-        phoneFinal = phoneInputController.text;
-        emailFinal = emailInputController.text;
-        phone1Final = phone1InputController.text;
-        phone2Final = phone2InputController.text;
-        if (nameFinal == "" ||
-            phoneFinal == "" ||
-            emailFinal == "" ||
-            birthDate == null ||
-            bloodFinal == "" ||
-            phone1Final == "" ||
-            phone2Final == "") {
-          CustomUI().showToast('공란을 다 채워주세요!!');
-        } else {
-          birthFinal = birthDate.toString().split(' ')[0];
-          final customID = '${phoneFinal}_${nameFinal}_${birthFinal}';
-          if (await checkIfDocExists(customID)) {
-            CustomUI().showToast('유저가 이미 존재합니다. 로그인 해주세요!');
-          } else {
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => OTPAuth(
-                      credential: [
-                        'signUp',
-                        customID,
-                        emailFinal,
-                        bloodFinal,
-                        phone1Final,
-                        phone2Final
-                      ],
-                    )));
-          }
-        }
-      },
-      child: const Text('등록하기'),
-      style: ElevatedButton.styleFrom(
-          primary: Colors.cyan.shade500,
-          shape: StadiumBorder(),
-          padding: const EdgeInsets.symmetric(horizontal: 100, vertical: 10),
-          textStyle: const TextStyle(
-            color: Colors.white,
-            fontSize: 15,
-            fontWeight: FontWeight.bold,
-          )),
+  Widget signUpBTNBuilder() {
+    bool _isAnimating = true;
+    final _isStretched = _isAnimating || state == LoadingState.init;
+    final _isDone = state == LoadingState.done;
+    return AnimatedContainer(
+      duration: Duration(milliseconds: 300),
+      curve: Curves.easeIn,
+      width: state == LoadingState.init ? 1000.h : 200.h,
+      onEnd: () => setState(() => _isAnimating = !_isAnimating),
+      height: 200.h,
+      child: _isStretched ? signUpBTN() : CustomUI().buildLoading(_isDone),
     );
+  }
+
+  ElevatedButton signUpBTN() {
+    return ElevatedButton(
+        onPressed: () async {
+          setState(() {
+            state = LoadingState.loading;
+          });
+          nameFinal = nameInputController.text;
+          phoneFinal = phoneInputController.text;
+          emailFinal = emailInputController.text;
+          phone1Final = phone1InputController.text;
+          phone2Final = phone2InputController.text;
+          if (nameFinal == "" ||
+              phoneFinal == "" ||
+              emailFinal == "" ||
+              birthDate == null ||
+              bloodFinal == "" ||
+              phone1Final == "" ||
+              phone2Final == "") {
+            CustomUI().showToast('공란을 다 채워주세요!!');
+          } else {
+            birthFinal = birthDate.toString().split(' ')[0];
+            final customID = '${phoneFinal}_${nameFinal}_${birthFinal}';
+            if (await checkIfDocExists(customID)) {
+              CustomUI().showToast('유저가 이미 존재합니다. 로그인 해주세요!');
+            } else {
+              setState(() {
+                state = LoadingState.done;
+              });
+              CustomFunc().giveDelay(500);
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => OTPAuth(
+                        credential: [
+                          'signUp',
+                          customID,
+                          emailFinal,
+                          bloodFinal,
+                          phone1Final,
+                          phone2Final
+                        ],
+                      )));
+            }
+          }
+          setState(() {
+            state = LoadingState.init;
+          });
+        },
+        child: FittedBox(
+          child: Text(
+            '등록하기',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 60.sp,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        style: ElevatedButton.styleFrom(
+          primary: Colors.cyan,
+          shape: StadiumBorder(),
+          padding: EdgeInsets.symmetric(vertical: 10.h),
+        ));
   }
 
   Future<bool> checkIfDocExists(String docID) async {
