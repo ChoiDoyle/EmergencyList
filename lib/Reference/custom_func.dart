@@ -1,5 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/material.dart';
 
 //2초 딜레이 주고 싶을 때
 //await Future.delayed(Duration(seconds: 2));
@@ -39,5 +42,27 @@ class CustomFunc {
     } catch (e) {
       throw e;
     }
+  }
+
+  void showToast(String content) => Fluttertoast.showToast(
+      msg: content,
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.CENTER,
+      timeInSecForIosWeb: 1,
+      backgroundColor: Colors.cyan,
+      textColor: Colors.white,
+      fontSize: 70.sp);
+
+  //페이지 이동
+  void popPage(BuildContext context, page) {
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => page));
+  }
+
+  void startPage(BuildContext context, page) {
+    Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (BuildContext context) => page,
+        ));
   }
 }

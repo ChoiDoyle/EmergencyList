@@ -1,3 +1,4 @@
+import 'package:emergency_list/Reference/custom_func.dart';
 import 'package:emergency_list/home.dart';
 import 'package:emergency_list/sign_in.dart';
 import 'package:flutter/material.dart';
@@ -29,8 +30,7 @@ class _WrapperState extends State<Wrapper> {
 
   Future moveToHome(BuildContext context, _user) async {
     if (_user == null) {
-      Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: (BuildContext context) => SignIn()));
+      CustomFunc().startPage(context, SignIn());
     } else {
       final SharedPreferences sharedPreferences =
           await SharedPreferences.getInstance();
@@ -40,12 +40,7 @@ class _WrapperState extends State<Wrapper> {
       } else {
         String _customID = sharedPreferences.getString('customID').toString();
         print(_customID);
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (BuildContext context) => Home(
-                      customID: _customID,
-                    )));
+        CustomFunc().startPage(context, Home(customID: _customID));
       }
     }
   }

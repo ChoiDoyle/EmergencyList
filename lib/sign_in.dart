@@ -170,7 +170,7 @@ class _SignInState extends State<SignIn> {
           nameFinal = nameInputController.text;
           phoneFinal = phoneInputController.text;
           if (nameFinal == "" || phoneFinal == "" || birthDate == null) {
-            CustomUI().showToast('공란을 다 채워주세요!!');
+            CustomFunc().showToast('공란을 다 채워주세요!!');
           } else {
             birthFinal = birthDate.toString().split(' ')[0];
             final customID = '${phoneFinal}_${nameFinal}_$birthFinal';
@@ -179,11 +179,10 @@ class _SignInState extends State<SignIn> {
                 state = LoadingState.done;
               });
               await CustomFunc().giveDelay(500);
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => OTPAuth(
-                      credential: ['logIn', customID, '0', '0', '0', '0'])));
+              CustomFunc().popPage(context,
+                  OTPAuth(credential: ['logIn', customID, '0', '0', '0', '0']));
             } else {
-              CustomUI().showToast('일치하는 유저가 없습니다.');
+              CustomFunc().showToast('일치하는 유저가 없습니다.');
             }
           }
           setState(() {
@@ -352,28 +351,29 @@ class _SignInState extends State<SignIn> {
               bloodFinal == "" ||
               phone1Final == "" ||
               phone2Final == "") {
-            CustomUI().showToast('공란을 다 채워주세요!!');
+            CustomFunc().showToast('공란을 다 채워주세요!!');
           } else {
             birthFinal = birthDate.toString().split(' ')[0];
             final customID = '${phoneFinal}_${nameFinal}_${birthFinal}';
             if (await CustomFunc().checkIfDocExists(customID)) {
-              CustomUI().showToast('유저가 이미 존재합니다. 로그인 해주세요!');
+              CustomFunc().showToast('유저가 이미 존재합니다. 로그인 해주세요!');
             } else {
               setState(() {
                 state = LoadingState.done;
               });
               CustomFunc().giveDelay(500);
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => OTPAuth(
-                        credential: [
-                          'signUp',
-                          customID,
-                          emailFinal,
-                          bloodFinal,
-                          phone1Final,
-                          phone2Final
-                        ],
-                      )));
+              CustomFunc().popPage(
+                  context,
+                  OTPAuth(
+                    credential: [
+                      'signUp',
+                      customID,
+                      emailFinal,
+                      bloodFinal,
+                      phone1Final,
+                      phone2Final
+                    ],
+                  ));
             }
           }
           setState(() {

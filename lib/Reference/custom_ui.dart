@@ -54,13 +54,4 @@ class CustomUI {
       ),
     );
   }
-
-  void showToast(String content) => Fluttertoast.showToast(
-      msg: content,
-      toastLength: Toast.LENGTH_SHORT,
-      gravity: ToastGravity.CENTER,
-      timeInSecForIosWeb: 1,
-      backgroundColor: Colors.cyan,
-      textColor: Colors.white,
-      fontSize: 70.sp);
 }

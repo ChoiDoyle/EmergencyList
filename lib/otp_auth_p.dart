@@ -136,7 +136,7 @@ class _OTPAuthState extends State<OTPAuth> {
                                     child: Text("다시 전송"),
                                     onPressed: () {
                                       verifyNumber();
-                                      CustomUI().showToast('다시 전송하였습니다.');
+                                      CustomFunc().showToast('다시 전송하였습니다.');
                                     })
                               ],
                             ),
@@ -195,15 +195,14 @@ class _OTPAuthState extends State<OTPAuth> {
             credential[5]);
       }
     } catch (e) {
-      CustomUI().showToast('인증번호가 불일치합니다. 다시 시도해주세요!!');
+      CustomFunc().showToast('인증번호가 불일치합니다. 다시 시도해주세요!!');
       otpController.clear();
     }
   }
 
   _logIn(String _customID) {
     CustomFunc().storeString('customID', _customID).then((value) {
-      Navigator.of(context).push(
-          MaterialPageRoute(builder: (context) => Home(customID: customID)));
+      CustomFunc().startPage(context, Home(customID: customID));
     });
   }
 
@@ -227,8 +226,7 @@ class _OTPAuthState extends State<OTPAuth> {
                     CustomFunc()
                         .storeString('customID', _customID)
                         .then((value) {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => Home(customID: customID)));
+                      CustomFunc().startPage(context, Home(customID: customID));
                     }).catchError((error) =>
                             {print('at OTP_rtdb : not uploaded'), print(error)})
                   })

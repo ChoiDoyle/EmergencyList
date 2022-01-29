@@ -48,6 +48,7 @@ class _MyInfoState extends State<MyInfo> {
             '$myName님의 재난명부',
             style: TextStyle(color: Colors.black),
           ),
+          iconTheme: IconThemeData(color: Colors.black),
           centerTitle: true,
           elevation: 0.0,
           backgroundColor: Colors.grey[200],

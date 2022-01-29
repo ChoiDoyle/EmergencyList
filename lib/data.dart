@@ -5,10 +5,10 @@ class FamilyData {
 }
 
 class FriendData {
-  String phone, table, timestamp, dbKey;
-  Map menu;
+  String name, phone, birth, relation;
+  int level;
 
-  FriendData(this.menu, this.phone, this.table, this.timestamp, this.dbKey);
+  FriendData(this.name, this.phone, this.birth, this.relation, this.level);
 }
 
 class MyData {
