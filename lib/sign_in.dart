@@ -174,7 +174,7 @@ class _SignInState extends State<SignIn> {
           } else {
             birthFinal = birthDate.toString().split(' ')[0];
             final customID = '${phoneFinal}_${nameFinal}_$birthFinal';
-            if (await checkIfDocExists(customID)) {
+            if (await CustomFunc().checkIfDocExists(customID)) {
               setState(() {
                 state = LoadingState.done;
               });
@@ -356,7 +356,7 @@ class _SignInState extends State<SignIn> {
           } else {
             birthFinal = birthDate.toString().split(' ')[0];
             final customID = '${phoneFinal}_${nameFinal}_${birthFinal}';
-            if (await checkIfDocExists(customID)) {
+            if (await CustomFunc().checkIfDocExists(customID)) {
               CustomUI().showToast('유저가 이미 존재합니다. 로그인 해주세요!');
             } else {
               setState(() {
@@ -395,15 +395,6 @@ class _SignInState extends State<SignIn> {
           shape: StadiumBorder(),
           padding: EdgeInsets.symmetric(vertical: 10.h),
         ));
-  }
-
-  Future<bool> checkIfDocExists(String docID) async {
-    try {
-      final doc = await fsdb.collection('Users').doc(docID).get();
-      return doc.exists;
-    } catch (e) {
-      throw e;
-    }
   }
 
   //Bottom Navigation Bar

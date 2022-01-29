@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 //2초 딜레이 주고 싶을 때
@@ -28,5 +29,15 @@ class CustomFunc {
     final SharedPreferences sharedPreferences =
         await SharedPreferences.getInstance();
     sharedPreferences.remove(id);
+  }
+
+  Future<bool> checkIfDocExists(String docID) async {
+    try {
+      final doc =
+          await FirebaseFirestore.instance.collection('Users').doc(docID).get();
+      return doc.exists;
+    } catch (e) {
+      throw e;
+    }
   }
 }

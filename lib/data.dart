@@ -12,8 +12,8 @@ class FriendData {
 }
 
 class MyData {
-  String phone, table, timestamp, dbKey;
-  Map menu;
+  String name, phone, birth, bloodType, email, emerCon1, emerCon2;
 
-  MyData(this.menu, this.phone, this.table, this.timestamp, this.dbKey);
+  MyData(this.name, this.phone, this.birth, this.bloodType, this.email,
+      this.emerCon1, this.emerCon2);
 }

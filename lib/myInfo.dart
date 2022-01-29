@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:colorful_safe_area/colorful_safe_area.dart';
+import 'package:emergency_list/Reference/custom_func.dart';
 import 'package:emergency_list/data.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +18,7 @@ class _MyInfoState extends State<MyInfo> {
 
   _MyInfoState(this.customID);
 
-  late Future<List<MyData>> myDataForUpdate;
+  late Future<MyData> myDataForUpdate;
 
   //Firebase & Firestore
   final fsdb = FirebaseFirestore.instance;
@@ -76,10 +77,10 @@ class _MyInfoState extends State<MyInfo> {
     setState(() {
       myDataForUpdate = fetchMyData();
     });
-    return FutureBuilder<List<MyData>>(
+    return FutureBuilder<MyData>(
       future: myDataForUpdate,
-      builder: (context, familySnap) {
-        switch (familySnap.connectionState) {
+      builder: (context, mySnap) {
+        switch (mySnap.connectionState) {
           case ConnectionState.waiting:
             return Center(
               child: CircularProgressIndicator(
@@ -87,36 +88,41 @@ class _MyInfoState extends State<MyInfo> {
               ),
             );
           default:
-            if (familySnap.hasError) {
+            if (mySnap.hasError) {
               return Text('에러발생');
             } else {
-              print(familySnap.data!.toString());
-              return myInfoPage();
+              print(mySnap.data!.toString());
+              return myInfoPage(mySnap.data!);
             }
         }
       },
     );
   }
 
-  Future<List<MyData>> fetchMyData() async {
-    List<MyData> _myListUpdated = [];
-    await fsdb.collection('Users').doc(customID).get().then((snapshot) {
-      final _familyDataMap = Map<String, dynamic>.from(snapshot.value);
-      if (_familyDataMap.containsKey('empty')) {
-      } else {
-        _familyDataMap.forEach((key, value) {
-          final _listCustomID = key.toString().split('_');
-          final _relation = value['relation'].toString();
-          MyData _data = MyData(
-              _listCustomID[1], _listCustomID[0], _listCustomID[2], _relation);
-          _myListUpdated.add(_data);
+  Future<MyData> fetchMyData() async {
+    String _bloodType = '';
+    String _email = '';
+    String _emerCon1 = '';
+    String _emerCon2 = '';
+    try {
+      if (await CustomFunc().checkIfDocExists(customID)) {
+        await fsdb.collection('Users').doc(customID).get().then((snapshot) {
+          final _familyDataMap = Map<String, dynamic>.from(snapshot.data()!);
+          _bloodType = _familyDataMap['bloodType'];
+          _email = _familyDataMap['email'];
+          _emerCon1 = _familyDataMap['emergencyContact1'];
+          _emerCon2 = _familyDataMap['emergencyContact2'];
         });
       }
-    });
-    return _myListUpdated;
+    } catch (e) {
+      print(e.toString());
+    }
+    return MyData(
+        myName, myPhone, myBirth, _bloodType, _email, _emerCon1, _emerCon2);
   }
 
-  Widget myInfoPage() {
-    return Container();
+  Widget myInfoPage(MyData _myDataForUpdate) {
+    return Text(
+        '${_myDataForUpdate.name} \n${_myDataForUpdate.phone} \n${_myDataForUpdate.birth} \n${_myDataForUpdate.bloodType} \n${_myDataForUpdate.email} \n${_myDataForUpdate.emerCon1} \n${_myDataForUpdate.emerCon2} \n');
   }
 }
