@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:colorful_safe_area/colorful_safe_area.dart';
 import 'package:emergency_list/Reference/custom_func.dart';
+import 'package:emergency_list/Reference/custom_ui.dart';
 import 'package:emergency_list/data.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -86,11 +87,7 @@ class _MyInfoState extends State<MyInfo> {
       builder: (context, mySnap) {
         switch (mySnap.connectionState) {
           case ConnectionState.waiting:
-            return Center(
-              child: CircularProgressIndicator(
-                color: Colors.black,
-              ),
-            );
+            return Center(child: CustomUI().customLoading());
           default:
             if (mySnap.hasError) {
               return Text('에러발생');

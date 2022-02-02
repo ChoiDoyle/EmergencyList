@@ -32,9 +32,15 @@ class CustomUI {
         ));
   }
 
-  SizedBox sizedBox(double height) {
+  SizedBox sizedHeightBox(double height) {
     return SizedBox(
       height: height.h,
+    );
+  }
+
+  SizedBox sizedWidthBox(double width) {
+    return SizedBox(
+      width: width.h,
     );
   }
 

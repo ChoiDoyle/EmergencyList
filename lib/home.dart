@@ -4,6 +4,7 @@ import 'package:emergency_list/Authentication/auth.dart';
 import 'package:emergency_list/Authentication/wrapper.dart';
 import 'package:emergency_list/Reference/custom_func.dart';
 import 'package:emergency_list/Reference/custom_ui.dart';
+import 'package:emergency_list/Reference/menu_item.dart';
 import 'package:emergency_list/data.dart';
 import 'package:emergency_list/myInfo.dart';
 import 'package:emergency_list/register.dart';
@@ -69,43 +70,26 @@ class _HomeState extends State<Home> {
           centerTitle: true,
           elevation: 0.0,
           backgroundColor: Colors.grey[200],
+          iconTheme: IconThemeData(color: Colors.black),
           leading: IconButton(
             icon: Icon(Icons.menu, color: Colors.black),
             onPressed: () {
               _key.currentState?.openDrawer();
             },
           ),
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(
-                Icons.add,
-                color: Colors.black,
-              ),
-              onPressed: () {
-                CustomFunc().popPage(context, Register(customID: customID));
-              },
-            ),
-            IconButton(
-              icon: Icon(
-                Icons.person_pin_circle_outlined,
-                color: Colors.black,
-              ),
-              onPressed: () {
-                CustomFunc().popPage(context, MyInfo(customID: customID));
-              },
-            ),
-            IconButton(
-              icon: Icon(
-                Icons.logout,
-                color: Colors.black,
-              ),
-              onPressed: () async {
-                await FirebaseAuth.instance.signOut().then((_) => {
-                      CustomFunc().removeString('customID'),
-                      CustomFunc().startPage(context, Wrapper())
-                    });
-              },
-            ),
+          actions: [
+            PopupMenuButton<HomeMenuItem>(
+              onSelected: (item) => menuPopUpSelected(context, item),
+              itemBuilder: (context) => [
+                ...HomeMenuItems.itemsFirst
+                    .map(CustomFunc().buildMenuItems)
+                    .toList(),
+                const PopupMenuDivider(),
+                ...HomeMenuItems.itemsSecond
+                    .map(CustomFunc().buildMenuItems)
+                    .toList(),
+              ],
+            )
           ],
         ),
         body: navigationIndex == 0
@@ -116,6 +100,23 @@ class _HomeState extends State<Home> {
         bottomNavigationBar: buildNavigationBar(),
       ),
     );
+  }
+
+  void menuPopUpSelected(BuildContext context, HomeMenuItem item) async {
+    switch (item) {
+      case HomeMenuItems.itemRegister:
+        CustomFunc().popPage(context, Register(customID: customID));
+        break;
+      case HomeMenuItems.itemMyInfo:
+        CustomFunc().popPage(context, Register(customID: customID));
+        break;
+      case HomeMenuItems.itemSignOut:
+        await FirebaseAuth.instance.signOut().then((_) => {
+              CustomFunc().removeString('customID'),
+              CustomFunc().startPage(context, Wrapper())
+            });
+        break;
+    }
   }
 
   Widget familyInfoBuilder() {
@@ -246,9 +247,6 @@ class _HomeState extends State<Home> {
                       fontSize: 80.sp,
                       fontWeight: FontWeight.bold),
                 ),
-              ),
-              SizedBox(
-                height: 0.1.h,
               ),
               Container(
                 width: double.infinity,
@@ -393,9 +391,6 @@ class _HomeState extends State<Home> {
                       fontSize: 80.sp,
                       fontWeight: FontWeight.bold),
                 ),
-              ),
-              SizedBox(
-                height: 0.1.h,
               ),
               Container(
                 width: double.infinity,

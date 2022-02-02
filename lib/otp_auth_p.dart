@@ -73,17 +73,17 @@ class _OTPAuthState extends State<OTPAuth> {
               ),
               child: Column(
                 children: <Widget>[
-                  CustomUI().sizedBox(40),
+                  CustomUI().sizedHeightBox(40),
                   Text(
                     '휴대전화 인증',
                     style: TextStyle(color: Colors.white, fontSize: 70.sp),
                   ),
-                  CustomUI().sizedBox(10),
+                  CustomUI().sizedHeightBox(10),
                   Text(
                     '재난명부 Ver1.0',
                     style: TextStyle(color: Colors.white, fontSize: 100.sp),
                   ),
-                  CustomUI().sizedBox(20),
+                  CustomUI().sizedHeightBox(20),
                   Container(
                     decoration: const BoxDecoration(
                         color: Colors.white,
@@ -92,7 +92,7 @@ class _OTPAuthState extends State<OTPAuth> {
                       padding: EdgeInsets.all(30.h),
                       child: Column(
                         children: [
-                          CustomUI().sizedBox(100),
+                          CustomUI().sizedHeightBox(100),
                           Container(
                             width: MediaQuery.of(context).size.width,
                             margin: EdgeInsets.only(left: 20.w),

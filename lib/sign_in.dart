@@ -87,17 +87,17 @@ class _SignInState extends State<SignIn> {
                 ),
                 child: Column(
                   children: <Widget>[
-                    CustomUI().sizedBox(40),
+                    CustomUI().sizedHeightBox(40),
                     Text(
                       '로그인하기',
                       style: TextStyle(color: Colors.white, fontSize: 100.sp),
                     ),
-                    CustomUI().sizedBox(10),
+                    CustomUI().sizedHeightBox(10),
                     Text(
                       '재난명부 Ver1.0',
                       style: TextStyle(color: Colors.white, fontSize: 70.sp),
                     ),
-                    CustomUI().sizedBox(20),
+                    CustomUI().sizedHeightBox(20),
                     Container(
                       decoration: const BoxDecoration(
                           color: Colors.white,
@@ -106,17 +106,17 @@ class _SignInState extends State<SignIn> {
                         padding: EdgeInsets.all(30.h),
                         child: Column(
                           children: [
-                            CustomUI().sizedBox(100),
+                            CustomUI().sizedHeightBox(100),
                             //이름
                             CustomUI().titleForInput(context, '이름'),
                             CustomUI().controllerForInput(nameInputController,
                                 '이름을 입력하세요', TextInputType.name),
-                            CustomUI().sizedBox(50),
+                            CustomUI().sizedHeightBox(50),
                             //전화번호
                             CustomUI().titleForInput(context, '전화번호'),
                             CustomUI().controllerForInput(phoneInputController,
                                 '전화번호를 입력하세요', TextInputType.phone),
-                            CustomUI().sizedBox(50),
+                            CustomUI().sizedHeightBox(50),
                             //생년월일
                             CustomUI().titleForInput(context, '생년월일'),
                             Container(
@@ -132,7 +132,7 @@ class _SignInState extends State<SignIn> {
                                     setState(() => birthDate = dateTime),
                               )),
                             ),
-                            CustomUI().sizedBox(900.h),
+                            CustomUI().sizedHeightBox(900.h),
                             //로그인 버튼
                             logInBTNBuilder(),
                           ],
@@ -224,17 +224,17 @@ class _SignInState extends State<SignIn> {
                     ])),
                 child: Column(
                   children: <Widget>[
-                    CustomUI().sizedBox(40),
+                    CustomUI().sizedHeightBox(40),
                     Text(
                       '가입하기',
                       style: TextStyle(color: Colors.white, fontSize: 100.sp),
                     ),
-                    CustomUI().sizedBox(10),
+                    CustomUI().sizedHeightBox(10),
                     Text(
                       '재난명부 Ver1.0',
                       style: TextStyle(color: Colors.white, fontSize: 70.sp),
                     ),
-                    CustomUI().sizedBox(20),
+                    CustomUI().sizedHeightBox(20),
                     Container(
                       decoration: const BoxDecoration(
                           color: Colors.white,
@@ -243,7 +243,7 @@ class _SignInState extends State<SignIn> {
                         padding: EdgeInsets.all(30.h),
                         child: Column(
                           children: [
-                            CustomUI().sizedBox(100),
+                            CustomUI().sizedHeightBox(100),
                             //이름
                             CustomUI().titleForInput(context, '이름'),
                             CustomUI().controllerForInput(nameInputController,
@@ -295,7 +295,7 @@ class _SignInState extends State<SignIn> {
                                 }),
                               )),
                             ),
-                            CustomUI().sizedBox(100),
+                            CustomUI().sizedHeightBox(100),
                             //제 1연락처
                             CustomUI().titleForInput(context, '제 1비상연락처'),
                             CustomUI().controllerForInput(phone1InputController,
@@ -304,7 +304,7 @@ class _SignInState extends State<SignIn> {
                             CustomUI().titleForInput(context, '제 2비상연락처'),
                             CustomUI().controllerForInput(phone2InputController,
                                 '제 2비상연락처를 입력하세요', TextInputType.phone),
-                            CustomUI().sizedBox(100.h),
+                            CustomUI().sizedHeightBox(100.h),
                             //회원가입 버튼
                             signUpBTNBuilder(),
                           ],
