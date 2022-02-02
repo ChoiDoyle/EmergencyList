@@ -127,7 +127,7 @@ class _HomeState extends State<Home> {
       builder: (context, familySnap) {
         switch (familySnap.connectionState) {
           case ConnectionState.waiting:
-            return Center(child: Text('loading...'));
+            return Center(child: CustomUI().customLoading());
           default:
             if (familySnap.hasError) {
               return Text('에러발생');
@@ -300,7 +300,7 @@ class _HomeState extends State<Home> {
       builder: (context, friendSnap) {
         switch (friendSnap.connectionState) {
           case ConnectionState.waiting:
-            return Center(child: Text('loading...'));
+            return Center(child: CustomUI().customLoading());
           default:
             if (friendSnap.hasError) {
               return Text('에러발생');

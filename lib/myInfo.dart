@@ -44,9 +44,12 @@ class _MyInfoState extends State<MyInfo> {
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
-          title: Text(
-            '$myName님의 재난명부',
-            style: TextStyle(color: Colors.black),
+          title: FittedBox(
+            alignment: Alignment.center,
+            child: Text(
+              '$myName님의 재난명부',
+              style: TextStyle(color: Colors.black),
+            ),
           ),
           iconTheme: IconThemeData(color: Colors.black),
           centerTitle: true,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:lottie/lottie.dart';
 
 class CustomUI {
   Container titleForInput(BuildContext context, String title) {
@@ -53,5 +54,12 @@ class CustomUI {
               ),
       ),
     );
+  }
+
+  Widget customLoading() {
+    return SizedBox(
+        height: 500.h,
+        width: 500.h,
+        child: Lottie.asset('assets/loading.json'));
   }
 }
