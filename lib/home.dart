@@ -108,7 +108,7 @@ class _HomeState extends State<Home> {
         CustomFunc().popPage(context, Register(customID: customID));
         break;
       case HomeMenuItems.itemMyInfo:
-        CustomFunc().popPage(context, Register(customID: customID));
+        CustomFunc().popPage(context, MyInfo(customID: customID));
         break;
       case HomeMenuItems.itemSignOut:
         await FirebaseAuth.instance.signOut().then((_) => {
@@ -172,8 +172,8 @@ class _HomeState extends State<Home> {
 
   Future<List<FamilyData>> fetchFamilyData() async {
     List<FamilyData> _familyListUpdated = [];
-    await rtdb.child('Users/$customID/family').get().then((snapshot) {
-      final _familyDataMap = Map<String, dynamic>.from(snapshot.value);
+    await rtdb.child('Users/$customID/family').get().then((_snapshot) {
+      final _familyDataMap = Map<String, dynamic>.from(_snapshot.value);
       if (_familyDataMap.containsKey('empty')) {
       } else {
         _familyDataMap.forEach((key, value) {
@@ -314,8 +314,8 @@ class _HomeState extends State<Home> {
 
   Future<List<FriendData>> fetchFriendData() async {
     List<FriendData> _friendListUpdated = [];
-    await rtdb.child('Users/$customID/friend').get().then((snapshot) {
-      final _friendDataMap = Map<String, dynamic>.from(snapshot.value);
+    await rtdb.child('Users/$customID/friend').get().then((_snapshot) {
+      final _friendDataMap = Map<String, dynamic>.from(_snapshot.value);
       if (_friendDataMap.containsKey('empty')) {
       } else {
         _friendDataMap.forEach((key, value) {

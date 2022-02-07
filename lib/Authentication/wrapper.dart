@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:emergency_list/Reference/custom_func.dart';
 import 'package:emergency_list/home.dart';
 import 'package:emergency_list/sign_in.dart';
@@ -35,8 +36,7 @@ class _WrapperState extends State<Wrapper> {
       final SharedPreferences sharedPreferences =
           await SharedPreferences.getInstance();
       if (!sharedPreferences.containsKey('customID')) {
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (BuildContext context) => SignIn()));
+        CustomFunc().startPage(context, SignIn());
       } else {
         String _customID = sharedPreferences.getString('customID').toString();
         print(_customID);

@@ -212,6 +212,9 @@ class _OTPAuthState extends State<OTPAuth> {
         .collection('Users')
         .doc(customID)
         .set({
+          'name': _customID.split('_')[1],
+          'phone': _customID.split('_')[0],
+          'birth': _customID.split('_')[2],
           'email': _emailFinal,
           'bloodType': _bloodFinal,
           'emergencyContact1': _phone1Final,

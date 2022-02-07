@@ -17,3 +17,9 @@ class MyData {
   MyData(this.name, this.phone, this.birth, this.bloodType, this.email,
       this.emerCon1, this.emerCon2);
 }
+
+class SearchedData {
+  String name, phone, birth;
+
+  SearchedData(this.name, this.phone, this.birth);
+}
