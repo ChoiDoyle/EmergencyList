@@ -68,4 +68,36 @@ class CustomUI {
         width: 500.h,
         child: Lottie.asset('assets/loading.json'));
   }
+
+  PreferredSizeWidget simpleAppBar(String _title) {
+    return AppBar(
+      title: FittedBox(
+        alignment: Alignment.center,
+        child: Text(
+          _title,
+          style: TextStyle(color: Colors.black),
+        ),
+      ),
+      iconTheme: IconThemeData(color: Colors.black),
+      centerTitle: true,
+      elevation: 0.0,
+      backgroundColor: Colors.grey[200],
+      /*actions: <Widget>[
+            IconButton(
+              icon: Icon(
+                Icons.add,
+                color: Colors.black,
+              ),
+              onPressed: () {},
+            ),
+            IconButton(
+              icon: Icon(
+                Icons.person_pin_circle_outlined,
+                color: Colors.black,
+              ),
+              onPressed: () {},
+            ),
+          ],*/
+    );
+  }
 }

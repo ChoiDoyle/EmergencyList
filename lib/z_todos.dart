@@ -7,8 +7,6 @@
   2. load(기간, 시간)
 */
 
-// TODOS: 로딩 dialog
-
 // TODOS: input controller form verification
 
 // TODOS: db 규칙 정하기 for security issues

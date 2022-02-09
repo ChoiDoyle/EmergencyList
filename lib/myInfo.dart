@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:colorful_safe_area/colorful_safe_area.dart';
 import 'package:emergency_list/Reference/custom_func.dart';
 import 'package:emergency_list/Reference/custom_ui.dart';
-import 'package:emergency_list/data.dart';
+import 'package:emergency_list/Reference/data.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
@@ -44,35 +44,7 @@ class _MyInfoState extends State<MyInfo> {
       color: Colors.white,
       child: Scaffold(
         backgroundColor: Colors.white,
-        appBar: AppBar(
-          title: FittedBox(
-            alignment: Alignment.center,
-            child: Text(
-              '$myName님의 재난명부',
-              style: TextStyle(color: Colors.black),
-            ),
-          ),
-          iconTheme: IconThemeData(color: Colors.black),
-          centerTitle: true,
-          elevation: 0.0,
-          backgroundColor: Colors.grey[200],
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(
-                Icons.add,
-                color: Colors.black,
-              ),
-              onPressed: () {},
-            ),
-            IconButton(
-              icon: Icon(
-                Icons.person_pin_circle_outlined,
-                color: Colors.black,
-              ),
-              onPressed: () {},
-            ),
-          ],
-        ),
+        appBar: CustomUI().simpleAppBar('$myName님의 재난명부'),
         body: myInfoBuilder(),
       ),
     );

@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:colorful_safe_area/colorful_safe_area.dart';
 import 'package:emergency_list/Reference/custom_ui.dart';
-import 'package:emergency_list/data.dart';
+import 'package:emergency_list/Reference/data.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -33,32 +33,7 @@ class _RegisterState extends State<Register> {
       color: Colors.white,
       child: Scaffold(
         backgroundColor: Colors.white,
-        appBar: AppBar(
-          title: Text(
-            '가족/지인 등록하기',
-            style: TextStyle(color: Colors.black),
-          ),
-          iconTheme: IconThemeData(color: Colors.black),
-          centerTitle: true,
-          elevation: 0.0,
-          backgroundColor: Colors.grey[200],
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(
-                Icons.add,
-                color: Colors.black,
-              ),
-              onPressed: () {},
-            ),
-            IconButton(
-              icon: Icon(
-                Icons.person_pin_circle_outlined,
-                color: Colors.black,
-              ),
-              onPressed: () {},
-            ),
-          ],
-        ),
+        appBar: CustomUI().simpleAppBar('가족/지인 등록하기'),
         body: buildSearchPage(),
       ),
     );
@@ -145,51 +120,6 @@ class _RegisterState extends State<Register> {
     ]);
   }
 
-  /*Widget searchListBuilder() {
-    setState(() {
-      searchedList = fetchSearchedData();
-    });
-    return FutureBuilder<List<SearchedData>>(
-      future: searchedList,
-      builder: (context, searchedSnap) {
-        switch (searchedSnap.connectionState) {
-          case ConnectionState.waiting:
-            return Center(child: CustomUI().customLoading());
-          default:
-            if (searchedSnap.hasError) {
-              return Text('에러발생');
-            } else {
-              return searchedSnap.data!.isEmpty
-                  ? Text('존재하는 아이디가 없습니다.')
-                  : searchList(searchedSnap.data!);
-            }
-        }
-      },
-    );
-  }
-
-  Future<List<String>> fetchSearchedData() async {
-    List<String> _searchedListUpdated = [];
-    await fsdb.collection('Users').doc().get().then((_snapshot) {
-      print(_snapshot.reference.doc)
-    });
-    await rtdb.child('Users/$customID/friend').get().then((snapshot) {
-      final _friendDataMap = Map<String, dynamic>.from(snapshot.value);
-      if (_friendDataMap.containsKey('empty')) {
-      } else {
-        _friendDataMap.forEach((key, value) {
-          final _listCustomID = key.toString().split('_');
-          final _relation = value['relation'].toString();
-          final _level = value['level'];
-          FriendData _data = FriendData(_listCustomID[1], _listCustomID[0],
-              _listCustomID[2], _relation, _level);
-          _friendListUpdated.add(_data);
-        });
-      }
-    });
-    return _searchedListUpdated;
-  } */
-
   Widget searchList(List<SearchedData> _searchedListUpdated) =>
       ListView.builder(
           shrinkWrap: true,
@@ -198,11 +128,11 @@ class _RegisterState extends State<Register> {
           itemBuilder: (_, index) {
             return GestureDetector(
                 onTap: () {
-                  print('tapped');
-                  /*showPaymentDialogFunc(
-                  context,
-                  '${paymentListUpdated[index].phone}_${paymentListUpdated[index].table}',
-                  paymentListUpdated[index].menu);*/
+                  showSearchDialogFunc(
+                      context,
+                      _searchedListUpdated[index].name,
+                      _searchedListUpdated[index].phone,
+                      _searchedListUpdated[index].birth);
                 },
                 child: searchListCardUI(
                     _searchedListUpdated[index].name,
@@ -213,40 +143,126 @@ class _RegisterState extends State<Register> {
   searchListCardUI(_name, _phone, _birth) {
     return Container(
       padding: EdgeInsets.only(top: 10.h, bottom: 10.h),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(children: [
-            Container(
-                width: 60,
-                height: 60,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(50),
-                )),
-            SizedBox(width: 10.h),
-            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(_name,
-                  style: TextStyle(
-                      color: Colors.white, fontWeight: FontWeight.w500)),
-              SizedBox(
-                height: 5,
-              ),
-              Text('이름 : $_name', style: TextStyle(color: Colors.black)),
-              SizedBox(
-                height: 5,
-              ),
-              Text('전화번호 : $_phone', style: TextStyle(color: Colors.black)),
-              SizedBox(
-                height: 5,
-              ),
-              Text('생년월일 : $_birth', style: TextStyle(color: Colors.black)),
-            ])
-          ]),
-          /*GestureDetector(
-            onTap: () {},
-          )*/
-        ],
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.grey[300],
+          borderRadius: BorderRadius.only(
+            bottomLeft:
+                Radius.circular(MediaQuery.of(context).size.height * 0.05),
+          ),
+        ),
+        padding: EdgeInsets.only(
+          left: 20.h,
+          top: 20.h,
+          bottom: 20.h,
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(children: [
+              Container(
+                  width: 60,
+                  height: 60,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(50),
+                  )),
+              SizedBox(width: 10.h),
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text(_name,
+                    style: TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.w500)),
+                SizedBox(
+                  height: 5,
+                ),
+                Text('이름 : $_name', style: TextStyle(color: Colors.black)),
+                SizedBox(
+                  height: 5,
+                ),
+                Text('전화번호 : $_phone', style: TextStyle(color: Colors.black)),
+                SizedBox(
+                  height: 5,
+                ),
+                Text('생년월일 : $_birth', style: TextStyle(color: Colors.black)),
+              ])
+            ]),
+          ],
+        ),
       ),
     );
+  }
+
+  showSearchDialogFunc(context, _name, _phone, _birth) {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return Center(
+              child: Material(
+                  type: MaterialType.transparency,
+                  child: Container(
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.grey,
+                      ),
+                      padding: EdgeInsets.all(10.h),
+                      width: MediaQuery.of(context).size.width * 0.7,
+                      height: 400.h,
+                      child: Center(
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              CustomUI().sizedHeightBox(30),
+                              Text(
+                                '이름 : $_name',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 30.sp,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              CustomUI().sizedHeightBox(30),
+                              Text(
+                                '전화번호 : $_phone',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 30.sp,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              CustomUI().sizedHeightBox(30),
+                              Text(
+                                '생일 : $_birth',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 30.sp,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              CustomUI().sizedHeightBox(30),
+                              Text(
+                                '위 정보의 사람에게 신청하시겠습니까?',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 30.sp,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              ElevatedButton(
+                                onPressed: () async {
+                                  Navigator.pop(context);
+                                },
+                                child: Text('신청'),
+                                style: ElevatedButton.styleFrom(
+                                    primary: Colors.black,
+                                    alignment: Alignment.center,
+                                    textStyle: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 50.sp,
+                                      fontWeight: FontWeight.bold,
+                                    )),
+                              )
+                            ]),
+                      ))));
+        });
   }
 }

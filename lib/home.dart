@@ -5,7 +5,8 @@ import 'package:emergency_list/Authentication/wrapper.dart';
 import 'package:emergency_list/Reference/custom_func.dart';
 import 'package:emergency_list/Reference/custom_ui.dart';
 import 'package:emergency_list/Reference/menu_item.dart';
-import 'package:emergency_list/data.dart';
+import 'package:emergency_list/Reference/data.dart';
+import 'package:emergency_list/detail.dart';
 import 'package:emergency_list/myInfo.dart';
 import 'package:emergency_list/register.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -195,11 +196,12 @@ class _HomeState extends State<Home> {
       itemBuilder: (_, index) {
         return GestureDetector(
             onTap: () {
-              print('tapped');
-              /*showPaymentDialogFunc(
-                  context,
-                  '${paymentListUpdated[index].phone}_${paymentListUpdated[index].table}',
-                  paymentListUpdated[index].menu);*/
+              final _customID = _familyListUpdated[index].phone +
+                  '_' +
+                  _familyListUpdated[index].name +
+                  '_' +
+                  _familyListUpdated[index].birth;
+              CustomFunc().popPage(context, Detail(customID: _customID));
             },
             child: familyCardUI(
                 _familyListUpdated[index].name,
@@ -338,11 +340,12 @@ class _HomeState extends State<Home> {
       itemBuilder: (_, index) {
         return GestureDetector(
             onTap: () {
-              print('tapped');
-              /*showPaymentDialogFunc(
-                  context,
-                  '${paymentListUpdated[index].phone}_${paymentListUpdated[index].table}',
-                  paymentListUpdated[index].menu);*/
+              final _customID = _friendListUpdated[index].phone +
+                  '_' +
+                  _friendListUpdated[index].name +
+                  '_' +
+                  _friendListUpdated[index].birth;
+              CustomFunc().popPage(context, Detail(customID: _customID));
             },
             child: friendCardUI(
                 _friendListUpdated[index].name,

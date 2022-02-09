@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:emergency_list/Reference/custom_func.dart';
 import 'package:emergency_list/home.dart';
-import 'package:emergency_list/sign_in.dart';
+import 'package:emergency_list/Authentication/sign_in.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
