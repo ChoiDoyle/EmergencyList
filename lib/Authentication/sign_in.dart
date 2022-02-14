@@ -132,7 +132,7 @@ class _SignInState extends State<SignIn> {
                                     setState(() => birthDate = dateTime),
                               )),
                             ),
-                            CustomUI().sizedHeightBox(900.h),
+                            CustomUI().sizedHeightBox(400.h),
                             //로그인 버튼
                             logInBTNBuilder(),
                           ],

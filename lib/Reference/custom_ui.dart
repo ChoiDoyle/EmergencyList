@@ -63,10 +63,12 @@ class CustomUI {
   }
 
   Widget customLoading() {
-    return SizedBox(
-        height: 500.h,
-        width: 500.h,
-        child: Lottie.asset('assets/loading.json'));
+    return Center(
+      child: SizedBox(
+          height: 500.h,
+          width: 500.h,
+          child: Lottie.asset('assets/loading.json')),
+    );
   }
 
   PreferredSizeWidget simpleAppBar(String _title) {
@@ -98,6 +100,170 @@ class CustomUI {
               onPressed: () {},
             ),
           ],*/
+    );
+  }
+
+  //Family List Card UI
+  Widget familyCardUI(BuildContext context, String _name, String _phone,
+      String _birth, String _relation) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 0, top: 10),
+      padding: const EdgeInsets.only(left: 20, right: 20, bottom: 10),
+      child: Container(
+          decoration: BoxDecoration(
+              color: Colors.grey[300],
+              borderRadius: BorderRadius.only(
+                bottomLeft:
+                    Radius.circular(MediaQuery.of(context).size.height * 0.05),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.3),
+                  offset: const Offset(-10.0, 0.0),
+                  blurRadius: 20.0.r,
+                  spreadRadius: 4.0.r,
+                )
+              ]),
+          padding: EdgeInsets.only(
+            left: 40.h,
+            top: 20.h,
+            bottom: 20.h,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.only(right: 20),
+                child: Text(
+                  _name,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 80.sp,
+                      fontWeight: FontWeight.bold),
+                ),
+              ),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.only(right: 20),
+                child: Text(
+                  _relation,
+                  textAlign: TextAlign.end,
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 50.sp,
+                      fontWeight: FontWeight.bold),
+                ),
+              ),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.only(right: 20),
+                child: Text(
+                  '전화번호 : $_phone',
+                  textAlign: TextAlign.end,
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 50.sp,
+                      fontWeight: FontWeight.bold),
+                ),
+              ),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.only(right: 20),
+                child: Text(
+                  '생일 : $_birth',
+                  textAlign: TextAlign.end,
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 50.sp,
+                      fontWeight: FontWeight.bold),
+                ),
+              ),
+            ],
+          )),
+    );
+  }
+
+  //Friend List Card UI
+  Widget friendCardUI(BuildContext context, String _name, String _phone,
+      String _birth, String _relation, int _level) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 0, top: 10),
+      padding: const EdgeInsets.only(left: 20, right: 20, bottom: 10),
+      child: Container(
+          decoration: BoxDecoration(
+              color: Colors.grey[300],
+              borderRadius: BorderRadius.only(
+                bottomLeft:
+                    Radius.circular(MediaQuery.of(context).size.height * 0.05),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.3),
+                  offset: const Offset(-10.0, 0.0),
+                  blurRadius: 20.0.r,
+                  spreadRadius: 4.0.r,
+                )
+              ]),
+          padding: EdgeInsets.only(
+            left: 40.h,
+            top: 20.h,
+            bottom: 20.h,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.only(right: 20),
+                child: Text(
+                  _name,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 80.sp,
+                      fontWeight: FontWeight.bold),
+                ),
+              ),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.only(right: 20),
+                child: Text(
+                  _relation,
+                  textAlign: TextAlign.end,
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 50.sp,
+                      fontWeight: FontWeight.bold),
+                ),
+              ),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.only(right: 20),
+                child: Text(
+                  '전화번호 : $_phone',
+                  textAlign: TextAlign.end,
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 50.sp,
+                      fontWeight: FontWeight.bold),
+                ),
+              ),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.only(right: 20),
+                child: Text(
+                  '생일 : $_birth',
+                  textAlign: TextAlign.end,
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 50.sp,
+                      fontWeight: FontWeight.bold),
+                ),
+              ),
+            ],
+          )),
     );
   }
 }

@@ -28,6 +28,9 @@ dependencies:
   
   fluttertoast: ^8.0.8
 
+  #expandable widget
+  expandable: ^5.0.1
+
   #animated splash screen
   animated_splash_screen: ^1.1.0
   lottie: ^1.2.1

@@ -88,6 +88,7 @@ class _MyInfoState extends State<MyInfo> {
         });
       }
     } catch (e) {
+      CustomFunc().showToast('잠시후 다시 시도해주세요');
       print(e.toString());
     }
     return MyData(

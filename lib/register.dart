@@ -113,9 +113,7 @@ class _RegisterState extends State<Register> {
         ]),
       ),
       searchedList.isEmpty
-          ? Container(
-              child: Text('empty'),
-            )
+          ? SizedBox()
           : Expanded(child: searchList(searchedList)),
     ]);
   }
@@ -206,7 +204,7 @@ class _RegisterState extends State<Register> {
                       ),
                       padding: EdgeInsets.all(10.h),
                       width: MediaQuery.of(context).size.width * 0.7,
-                      height: 400.h,
+                      height: 500.h,
                       child: Center(
                         child: Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
