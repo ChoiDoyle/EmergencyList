@@ -29,3 +29,9 @@ class DetailsData {
   String bloodType, email;
   DetailsData(this.bloodType, this.email);
 }
+
+//@NotiPage
+class NotiData {
+  String requestedID, relation;
+  NotiData(this.requestedID, this.relation);
+}

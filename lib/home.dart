@@ -6,10 +6,10 @@ import 'package:emergency_list/Authentication/auth.dart';
 import 'package:emergency_list/Authentication/wrapper.dart';
 import 'package:emergency_list/Reference/custom_func.dart';
 import 'package:emergency_list/Reference/custom_ui.dart';
-import 'package:emergency_list/Reference/menu_item.dart';
 import 'package:emergency_list/Reference/data.dart';
 import 'package:emergency_list/detail.dart';
 import 'package:emergency_list/myInfo.dart';
+import 'package:emergency_list/notification_page.dart';
 import 'package:emergency_list/register.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -86,18 +86,15 @@ class _HomeState extends State<Home> {
             },
           ),
           actions: [
-            PopupMenuButton<HomeMenuItem>(
-              onSelected: (item) => menuPopUpSelected(context, item),
-              itemBuilder: (context) => [
-                ...HomeMenuItems.itemsFirst
-                    .map(CustomFunc().buildMenuItems)
-                    .toList(),
-                const PopupMenuDivider(),
-                ...HomeMenuItems.itemsSecond
-                    .map(CustomFunc().buildMenuItems)
-                    .toList(),
-              ],
-            )
+            IconButton(
+              icon: Icon(
+                Icons.notification_important,
+                color: Colors.black,
+              ),
+              onPressed: () {
+                CustomFunc().popPage(context, NotiPage(customID: customID));
+              },
+            ),
           ],
         ),
         body: SingleChildScrollView(
@@ -116,23 +113,6 @@ class _HomeState extends State<Home> {
         bottomNavigationBar: buildNavigationBar(),
       ),
     );
-  }
-
-  void menuPopUpSelected(BuildContext context, HomeMenuItem item) async {
-    switch (item) {
-      case HomeMenuItems.itemRegister:
-        CustomFunc().popPage(context, Register(customID: customID));
-        break;
-      case HomeMenuItems.itemMyInfo:
-        CustomFunc().popPage(context, MyInfo(customID: customID));
-        break;
-      case HomeMenuItems.itemSignOut:
-        await FirebaseAuth.instance.signOut().then((_) => {
-              CustomFunc().removeString('customID'),
-              CustomFunc().startPage(context, Wrapper())
-            });
-        break;
-    }
   }
 
   Widget familyCommonInfoBuilder() {

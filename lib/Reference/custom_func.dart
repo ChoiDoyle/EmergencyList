@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:emergency_list/Reference/custom_ui.dart';
-import 'package:emergency_list/Reference/menu_item.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -67,21 +66,4 @@ class CustomFunc {
           builder: (BuildContext context) => page,
         ));
   }
-
-  //페이지 우측상단 PopUpMenuButton 관련
-  PopupMenuItem<HomeMenuItem> buildMenuItems(HomeMenuItem item) =>
-      PopupMenuItem<HomeMenuItem>(
-          value: item,
-          child: Row(children: [
-            Icon(
-              item.icon,
-              color: Colors.black,
-              size: 70.h,
-            ),
-            CustomUI().sizedWidthBox(30),
-            Text(
-              item.text,
-              style: TextStyle(fontSize: 50.sp, fontWeight: FontWeight.bold),
-            )
-          ]));
 }

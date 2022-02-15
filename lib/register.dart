@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:colorful_safe_area/colorful_safe_area.dart';
+import 'package:emergency_list/Reference/custom_func.dart';
 import 'package:emergency_list/Reference/custom_ui.dart';
 import 'package:emergency_list/Reference/data.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -126,7 +127,7 @@ class _RegisterState extends State<Register> {
           itemBuilder: (_, index) {
             return GestureDetector(
                 onTap: () {
-                  showSearchDialogFunc(
+                  showSearchDialogLVL1(
                       context,
                       _searchedListUpdated[index].name,
                       _searchedListUpdated[index].phone,
@@ -189,7 +190,8 @@ class _RegisterState extends State<Register> {
     );
   }
 
-  showSearchDialogFunc(context, _name, _phone, _birth) {
+  showSearchDialogLVL1(context, _name, _phone, _birth) {
+    final _width = MediaQuery.of(context).size.width * 0.7;
     return showDialog(
         context: context,
         builder: (context) {
@@ -197,70 +199,280 @@ class _RegisterState extends State<Register> {
               child: Material(
                   type: MaterialType.transparency,
                   child: Container(
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Colors.grey,
-                      ),
-                      padding: EdgeInsets.all(10.h),
-                      width: MediaQuery.of(context).size.width * 0.7,
-                      height: 500.h,
-                      child: Center(
-                        child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                              CustomUI().sizedHeightBox(30),
-                              Text(
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.grey,
+                    ),
+                    padding: EdgeInsets.all(10.h),
+                    width: _width,
+                    height: 500.h,
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Expanded(flex: 1, child: SizedBox()),
+                          Expanded(
+                            flex: 4,
+                            child: FittedBox(
+                              child: Text(
                                 '이름 : $_name',
-                                textAlign: TextAlign.center,
+                                textAlign: TextAlign.left,
                                 style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 30.sp,
-                                    fontWeight: FontWeight.bold),
+                                  color: Colors.black,
+                                ),
                               ),
-                              CustomUI().sizedHeightBox(30),
-                              Text(
+                            ),
+                          ),
+                          Expanded(flex: 1, child: SizedBox()),
+                          Expanded(
+                            flex: 4,
+                            child: FittedBox(
+                              child: Text(
                                 '전화번호 : $_phone',
-                                textAlign: TextAlign.center,
+                                textAlign: TextAlign.left,
                                 style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 30.sp,
-                                    fontWeight: FontWeight.bold),
+                                  color: Colors.black,
+                                ),
                               ),
-                              CustomUI().sizedHeightBox(30),
-                              Text(
+                            ),
+                          ),
+                          Expanded(flex: 1, child: SizedBox()),
+                          Expanded(
+                            flex: 4,
+                            child: FittedBox(
+                              child: Text(
                                 '생일 : $_birth',
-                                textAlign: TextAlign.center,
+                                textAlign: TextAlign.left,
                                 style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 30.sp,
-                                    fontWeight: FontWeight.bold),
+                                  color: Colors.black,
+                                ),
                               ),
-                              CustomUI().sizedHeightBox(30),
-                              Text(
-                                '위 정보의 사람에게 신청하시겠습니까?',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 30.sp,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              ElevatedButton(
-                                onPressed: () async {
-                                  Navigator.pop(context);
-                                },
-                                child: Text('신청'),
-                                style: ElevatedButton.styleFrom(
-                                    primary: Colors.black,
-                                    alignment: Alignment.center,
-                                    textStyle: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 50.sp,
-                                      fontWeight: FontWeight.bold,
-                                    )),
-                              )
-                            ]),
-                      ))));
+                            ),
+                          ),
+                          Expanded(flex: 2, child: SizedBox()),
+                          Expanded(
+                            flex: 6,
+                            child: Row(
+                              children: <Widget>[
+                                Container(
+                                  width: _width / 2 - 10.h,
+                                  padding: EdgeInsets.all(10.h),
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                      showSearchDialogLVL2(
+                                          context, _name, _phone, _birth, 1);
+                                    },
+                                    child: FittedBox(child: Text('가족으로 등록')),
+                                    style: ElevatedButton.styleFrom(
+                                        primary: Colors.black,
+                                        alignment: Alignment.center,
+                                        textStyle: TextStyle(
+                                          color: Colors.white,
+                                        )),
+                                  ),
+                                ),
+                                Container(
+                                  width: _width / 2 - 10.h,
+                                  padding: EdgeInsets.all(10.h),
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                      showSearchDialogLVL2(
+                                          context, _name, _phone, _birth, 2);
+                                    },
+                                    child: FittedBox(child: Text('지인으로 등록')),
+                                    style: ElevatedButton.styleFrom(
+                                        primary: Colors.black,
+                                        alignment: Alignment.center,
+                                        textStyle: TextStyle(
+                                          color: Colors.white,
+                                        )),
+                                  ),
+                                )
+                              ],
+                            ),
+                          )
+                        ]),
+                  )));
         });
+  }
+
+  showSearchDialogLVL2(context, _name, _phone, _birth, int _requestType) {
+    final _width = MediaQuery.of(context).size.width * 0.7;
+    String _selectedRelation = '아버지';
+
+    Container relationSelectText() {
+      return Container(
+        width: _width - 20.h,
+        padding: EdgeInsets.all(10.h),
+        child: const FittedBox(
+          child: Text(
+            '관계를 선택하세요.',
+            textAlign: TextAlign.left,
+            style: TextStyle(
+              color: Colors.black,
+            ),
+          ),
+        ),
+      );
+    }
+
+    Container relationSelect(_setState) {
+      Widget _relationRadio(String _relation) {
+        return Container(
+          padding: EdgeInsets.only(left: 10.h, right: 10.h),
+          child: ElevatedButton(
+            onPressed: (() {
+              _setState(() {
+                _selectedRelation = _relation;
+              });
+            }),
+            child: FittedBox(child: Text(_relation)),
+            style: ElevatedButton.styleFrom(
+                primary:
+                    _selectedRelation == _relation ? Colors.blue : Colors.grey,
+                alignment: Alignment.center,
+                textStyle: TextStyle(
+                  color: Colors.black,
+                )),
+          ),
+        );
+      }
+
+      return Container(
+        width: _width - 20.h,
+        alignment: Alignment.center,
+        child: Row(children: <Widget>[
+          _relationRadio('아버지'),
+          _relationRadio('어머니'),
+          _relationRadio('형제자매'),
+        ]),
+      );
+    }
+
+    Container requestCancelBTNLVL2(_context) {
+      return Container(
+        width: _width / 2 - 10.h,
+        padding: EdgeInsets.all(10.h),
+        child: ElevatedButton(
+          onPressed: () {
+            Navigator.of(_context).pop();
+          },
+          child: FittedBox(child: Text('취소')),
+          style: ElevatedButton.styleFrom(
+              primary: Colors.black,
+              alignment: Alignment.center,
+              textStyle: TextStyle(
+                color: Colors.white,
+              )),
+        ),
+      );
+    }
+
+    Container familyRequestBTNLVL2(_context) {
+      return Container(
+        width: _width / 2 - 10.h,
+        padding: EdgeInsets.all(10.h),
+        child: ElevatedButton(
+          onPressed: () async {
+            await rtdb
+                .child('Request')
+                .child('${_phone}_${_name}_$_birth')
+                .set({customID: _selectedRelation}).then((_) {
+              CustomFunc().showToast('등록 신청을 하였습니다. 상대방도 수락시 가족으로 등록됩니다.');
+              Navigator.of(_context).pop();
+            }).catchError((e) {
+              CustomFunc().showToast('잠시후 다시 시도해주세요.');
+            });
+          },
+          child: const Text('등록'),
+          style: ElevatedButton.styleFrom(
+              primary: Colors.black,
+              alignment: Alignment.center,
+              textStyle: TextStyle(
+                color: Colors.white,
+                fontSize: 50.sp,
+                fontWeight: FontWeight.bold,
+              )),
+        ),
+      );
+    }
+
+    Container friendRequestBTNLVL2(_context) {
+      return Container(
+        width: _width / 2 - 10.h,
+        padding: EdgeInsets.all(10.h),
+        child: ElevatedButton(
+          onPressed: () async {
+            await rtdb
+                .child('Request')
+                .child('${_phone}_${_name}_$_birth')
+                .set({customID: 'friend'}).then((_) {
+              CustomFunc().showToast('등록 신청을 하였습니다. 상대방도 수락시 지인으로 등록됩니다.');
+              Navigator.of(_context).pop();
+            }).catchError((e) {
+              CustomFunc().showToast('잠시후 다시 시도해주세요.');
+            });
+          },
+          child: const Text('등록'),
+          style: ElevatedButton.styleFrom(
+              primary: Colors.black,
+              alignment: Alignment.center,
+              textStyle: TextStyle(
+                color: Colors.white,
+                fontSize: 50.sp,
+                fontWeight: FontWeight.bold,
+              )),
+        ),
+      );
+    }
+
+    return showDialog(
+        context: context,
+        builder: (context) => StatefulBuilder(
+              builder: (context, setState) => Center(
+                  child: Material(
+                      type: MaterialType.transparency,
+                      child: Container(
+                        alignment: Alignment.centerLeft,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.grey,
+                        ),
+                        padding: EdgeInsets.all(10.h),
+                        width: _width,
+                        height: _requestType == 1 ? 500.h : 130.h,
+                        child: _requestType == 1
+                            ? Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                    Expanded(flex: 2, child: SizedBox()),
+                                    Expanded(
+                                        flex: 4, child: relationSelectText()),
+                                    Expanded(flex: 2, child: SizedBox()),
+                                    Expanded(
+                                      flex: 6,
+                                      child: relationSelect(setState),
+                                    ),
+                                    Expanded(flex: 3, child: SizedBox()),
+                                    Expanded(
+                                      flex: 6,
+                                      child: Row(
+                                        children: <Widget>[
+                                          requestCancelBTNLVL2(context),
+                                          familyRequestBTNLVL2(context)
+                                        ],
+                                      ),
+                                    )
+                                  ])
+                            : Row(
+                                children: <Widget>[
+                                  requestCancelBTNLVL2(context),
+                                  friendRequestBTNLVL2(context)
+                                ],
+                              ),
+                      ))),
+            ));
   }
 }
