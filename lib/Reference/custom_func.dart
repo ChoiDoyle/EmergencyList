@@ -54,6 +54,25 @@ class CustomFunc {
       textColor: Colors.white,
       fontSize: 70.sp);
 
+  String relation4MeConversion(String _relation) {
+    String _relation4Me = '';
+    switch (_relation) {
+      case '지인':
+        _relation4Me = '지인으';
+        break;
+      case '아버지':
+        _relation4Me = '자녀';
+        break;
+      case '어머니':
+        _relation4Me = '자녀';
+        break;
+      case '형제자매':
+        _relation4Me = _relation;
+        break;
+    }
+    return _relation4Me;
+  }
+
   //페이지 이동
   void popPage(BuildContext context, page) {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) => page));

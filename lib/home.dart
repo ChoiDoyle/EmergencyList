@@ -108,6 +108,11 @@ class _HomeState extends State<Home> {
                 : navigationIndex == 1
                     ? friendInfoBuilder()
                     : Container(),
+            navigationIndex == 0
+                ? startInitialize('family')
+                : navigationIndex == 1
+                    ? startInitialize('friend')
+                    : Container(),
           ],
         )),
         bottomNavigationBar: buildNavigationBar(),

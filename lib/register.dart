@@ -408,7 +408,7 @@ class _RegisterState extends State<Register> {
             await rtdb
                 .child('Request')
                 .child('${_phone}_${_name}_$_birth')
-                .set({customID: 'friend'}).then((_) {
+                .set({customID: '지인'}).then((_) {
               CustomFunc().showToast('등록 신청을 하였습니다. 상대방도 수락시 지인으로 등록됩니다.');
               Navigator.of(_context).pop();
             }).catchError((e) {

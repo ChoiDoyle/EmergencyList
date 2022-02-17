@@ -90,12 +90,10 @@ class _NotiPageState extends State<NotiPage> {
         }
       }).timeout(const Duration(seconds: 5));
     } catch (e) {
-      print('Error: $e');
+      print('Error: ${e.runtimeType}');
       if (e.runtimeType == TimeoutException) {
         CustomFunc().showToast('네트워크 상태를 확인하세요');
-      } else {
-        CustomFunc().showToast('잠시후 다시 시도해주세요.');
-      }
+      } else {}
     }
     return _notiListUpdated;
   }
@@ -106,7 +104,10 @@ class _NotiPageState extends State<NotiPage> {
       itemCount: _notiListUpdated.length,
       itemBuilder: (_, index) {
         return GestureDetector(
-            onTap: () {},
+            onTap: () {
+              showAcceptDialogFunc(context, _notiListUpdated[index].requestedID,
+                  _notiListUpdated[index].relation);
+            },
             child: notiCardUI(context, _notiListUpdated[index].requestedID,
                 _notiListUpdated[index].relation));
       });
@@ -115,6 +116,7 @@ class _NotiPageState extends State<NotiPage> {
     final _name = _requestedID.split('_')[1];
     final _phone = _requestedID.split('_')[0];
     final _birth = _requestedID.split('_')[2];
+    String _relation4Me = CustomFunc().relation4MeConversion(_relation);
     return Container(
       padding: EdgeInsets.only(top: 10.h, bottom: 10.h),
       child: Container(
@@ -126,43 +128,153 @@ class _NotiPageState extends State<NotiPage> {
           ),
         ),
         padding: EdgeInsets.only(
-          left: 20.h,
-          top: 20.h,
-          bottom: 20.h,
+          left: 10.h,
+          top: 10.h,
+          bottom: 10.h,
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Row(children: [
               Container(
-                  width: 60,
-                  height: 60,
+                  width: 200.h,
+                  height: 200.h,
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(50),
+                    borderRadius: BorderRadius.circular(20.h),
                   )),
               SizedBox(width: 10.h),
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text(_name,
+                Text('$_name님이 당신의 $_relation4Me로 신청하셨습니다.',
                     style: TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.w500)),
+                        fontSize: 50.sp,
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold)),
                 SizedBox(
-                  height: 5,
+                  height: 20.h,
                 ),
-                Text('이름 : $_name', style: TextStyle(color: Colors.black)),
+                Text('전화번호 : $_phone',
+                    style: TextStyle(fontSize: 30.sp, color: Colors.black)),
                 SizedBox(
-                  height: 5,
+                  height: 10.h,
                 ),
-                Text('전화번호 : $_phone', style: TextStyle(color: Colors.black)),
-                SizedBox(
-                  height: 5,
-                ),
-                Text('생년월일 : $_birth', style: TextStyle(color: Colors.black)),
-                Text('관계 : $_relation', style: TextStyle(color: Colors.black)),
+                Text('생년월일 : $_birth',
+                    style: TextStyle(fontSize: 30.sp, color: Colors.black)),
               ])
             ]),
           ],
         ),
       ),
     );
+  }
+
+  showAcceptDialogFunc(BuildContext context, _requestedID, _relation) {
+    final _height = 200.h;
+    final _width = MediaQuery.of(context).size.width * 0.8;
+    final _relation4Me = CustomFunc().relation4MeConversion(_relation);
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return Center(
+              child: Material(
+                  type: MaterialType.transparency,
+                  child: Container(
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10.h),
+                        color: Colors.grey,
+                      ),
+                      padding: EdgeInsets.all(10.h),
+                      width: _width,
+                      height: _height,
+                      child: Center(
+                        child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              SizedBox(
+                                height: _height - 20.h,
+                                width: _width / 2 - 10.h,
+                                child: ElevatedButton(
+                                  onPressed: () async {
+                                    try {
+                                      if (_relation4Me == '지인으') {
+                                        await rtdb
+                                            .child(
+                                                'Users/$customID/friend/$_requestedID')
+                                            .set({
+                                          'level': 1,
+                                          'relation': _relation
+                                        }).timeout(const Duration(seconds: 5));
+                                      } else {
+                                        await rtdb
+                                            .child(
+                                                'Users/$customID/family/$_requestedID')
+                                            .set({
+                                          'relation': _relation4Me
+                                        }).timeout(const Duration(seconds: 5));
+                                      }
+                                      await rtdb
+                                          .child(
+                                              'Request/$customID/$_requestedID')
+                                          .remove()
+                                          .then((_) {
+                                        setState(() {
+                                          notiDataForUpdate = fetchNotiData();
+                                        });
+                                        Navigator.pop(context);
+                                      }).timeout(const Duration(seconds: 5));
+                                    } catch (e) {
+                                      if (e.runtimeType == TimeoutException) {
+                                        CustomFunc()
+                                            .showToast('네트워크 상태를 확인하세요');
+                                      } else {}
+                                    }
+                                    Navigator.pop(context);
+                                  },
+                                  child: FittedBox(child: Text('수락')),
+                                  style: ElevatedButton.styleFrom(
+                                      primary: Colors.black,
+                                      alignment: Alignment.center,
+                                      textStyle: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      )),
+                                ),
+                              ),
+                              SizedBox(
+                                height: _height - 20.h,
+                                width: _width / 2 - 10.h,
+                                child: ElevatedButton(
+                                  onPressed: () async {
+                                    try {
+                                      await rtdb
+                                          .child(
+                                              'Request/$customID/$_requestedID')
+                                          .remove()
+                                          .then((_) {
+                                        setState(() {
+                                          notiDataForUpdate = fetchNotiData();
+                                        });
+                                        Navigator.pop(context);
+                                      }).timeout(const Duration(seconds: 5));
+                                    } catch (e) {
+                                      if (e.runtimeType == TimeoutException) {
+                                        CustomFunc()
+                                            .showToast('네트워크 상태를 확인하세요');
+                                      } else {}
+                                    }
+                                  },
+                                  child: FittedBox(child: Text('거절')),
+                                  style: ElevatedButton.styleFrom(
+                                      primary: Colors.black,
+                                      alignment: Alignment.center,
+                                      textStyle: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      )),
+                                ),
+                              )
+                            ]),
+                      ))));
+        });
   }
 }
